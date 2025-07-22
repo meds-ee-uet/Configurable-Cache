@@ -199,9 +199,11 @@ Our first implementation is a direct-mapped cache with the following configurati
   - On **miss**:
     - Provides dirty block if necessary.
     - Accepts new block from memory on refill.
+   
+      
 
 
-    ###  `comparator` 
+  ###  comparator 
 
   - Compares `tag` from CPU with stored `tag` in cache at `index`.
   - Checks valid bit.
@@ -209,7 +211,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 
-   ###  `main_memory` (abstract, if implemented)
+   ###  main_memory (abstract, if implemented)
   - Simulated using   random contents for testing.
 
 ---
@@ -237,7 +239,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 - **WRITE_BACK:** Performs write-back of dirty block to memory.
 - **WRITE_ALLOCATE:** Loads new block into cache from memory, transitions back to `COMPARE` for re-check.
 
-✅ This **table makes your FSM logic easy to remember and debug during simulations**.
+
 
 
 
