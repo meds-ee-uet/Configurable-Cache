@@ -1,4 +1,27 @@
-# ***DIRECT MAPPED CACHE***
+# ***CONFIGURABLE CACHE***
+# Configurable Cache (SystemVerilog Implementation)
+
+> **Parametric, synthesizable cache design with configurable associativity, block size, and replacement policies for learning and embedded systems.**
+
+🗓️ Last updated: July 22, 2025  
+© 2025 Maktab-e-Digital Systems Lahore. Licensed under the Apache 2.0 License.
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## **PROJECT OVERVIEW**:
 This project implements a direct-mapped cache controller with support for basic memory transactions. It simulates how a CPU communicates with memory via a cache to reduce access latency and improve performance. 
 
@@ -80,9 +103,26 @@ Our first implementation is a direct-mapped cache with the following configurati
 | Tag Bits            | 24 bits                |
 | Valid Bit           | 1 bit                  |
 | Dirty Bit           | 1 bit                  |
-| Total Bits/Line     | 154 bits               
+| Total Bits/Line     | 154 bits               |  
 
 ## **TOP LEVEL DIAGRAM**:
+<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/CACHE_TOPLEVEL%20(1)-Page-3.png" alt="Alt text" width="400"/>
+## **Inputs:**
+- req_type : Whether you want to read(req_type=0) or write (req
+- req_valid : to tell the cache that there is a request 
+- address [31:0] : the adress where we want to read or write at 
+- data_in [31 :0]
+- data_out [31:0]
+- data_in_mem[127:0]
+- clk
+- rst
+## **Outputs:**  
+- req_type
+- address[32:0]
+- dirty_blockout[128:0] 
+  
+
+
 
 
 
