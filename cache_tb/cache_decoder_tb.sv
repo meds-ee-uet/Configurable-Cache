@@ -34,7 +34,7 @@ module cache_decoder_tb;
         
         address = 32'b11011110101011011011111011101111;
 
-        // Wait for next posedge clk
+        
         @(posedge clk);
 
         // Display outputs for manual checking
