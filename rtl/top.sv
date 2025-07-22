@@ -38,7 +38,7 @@ module top (
     .write_en_mem(write_en_mem),
     .write_en_cache(write_en_cache),
     .read_en_cache(read_en_cache),
-    .refill(refill),
+    .refill(refill)
     );
     cache_memory cache (
     .clk(clk),
@@ -55,8 +55,7 @@ module top (
     .hit(hit),
     .data_out(data_out),
     .dirty_bit(dirty_bit),                // You'll need to expose this from cache
-    .done_cache(done_cache),               
-    .acknowledge(acknowledge)             
+    .done_cache(done_cache)                
    );
   
 endmodule
