@@ -106,20 +106,109 @@ Our first implementation is a direct-mapped cache with the following configurati
 | Total Bits/Line     | 154 bits               |  
 
 ## **TOP LEVEL DIAGRAM**:
-<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/CACHE_TOPLEVEL%20(1)-Page-3.png" alt="Alt text" width="400"/>
+<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL%20.drawio.png" alt="Alt text" width="400"/>
+
 ## **Inputs:**
-- req_type : Whether you want to read(req_type=0) or write (req
-- req_valid : to tell the cache that there is a request 
-- address [31:0] : the adress where we want to read or write at 
-- data_in [31 :0]
-- data_out [31:0]
-- data_in_mem[127:0]
-- clk
-- rst
-## **Outputs:**  
-- req_type
-- address[32:0]
-- dirty_blockout[128:0] 
+- `req_type`: Whether you want to read (`req_type = 0`) or write.
+- `req_valid`: Tells the cache there is a request.
+- `address [31:0]`: Address where you want to read or write.
+- `data_in [31:0]`: Data input from CPU.
+- `data_out [31:0]`: Data output to CPU.
+- `data_in_mem [127:0]`: Data input from memory.
+- `clk`: Clock.
+- `rst`: Reset.
+
+## **Outputs:**
+- `req_type`: (pass-through or processed based on your design).
+- `address [31:0]`: Address to memory or next stage.
+- `dirty_blockout [127:0]`: The dirty block sent to memory if eviction occurs.
+
+## **DataPath **
+<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.drawio.png" alt="Alt text" width="400"/>
+
+### 🛠️ Datapath (Brief)
+
+- CPU sends `req_valid`, `req_type`, `address [31:0]`, `data_in [31:0]` (for writes).
+- **Cache Decoder** splits the address into `tag`, `index`, `block offset`.
+- **Comparator** checks if the `tag` matches and valid bit is set, generating `hit`.
+- **Cache Controller**:
+  - Decides actions based on `hit`, `dirty_bit`, `req_type`, `ready_mem`.
+  - Generates control signals (`read_en_cache`, `write_en_cache`, `refill`, etc.).
+- **Cache Memory**:
+  - **Read hit**: sends `data_out [31:0]` to CPU.
+  - **Write hit**: updates the block and sets dirty bit.
+  - **Miss**: may write back dirty block (`dirty_block_out [127:0]`) and refill (`data_in_mem [127:0]`).
+- **Main Memory** provides/accepts 128-bit blocks for refill or write-back using handshake signals.
+
+
+  ## ⚙️ Module-by-Module Explanation
+
+### 1️⃣ `cache_decoder`
+- **Inputs**: `clk`, `address [31:0]`
+- **Outputs**: 
+  - `tag [23:0]`
+  - `index [5:0]`
+  - `blk_offset [1:0]`
+- **Function**: Splits the 32-bit CPU address into:
+  - `tag` (upper bits) for comparison
+  - `index` to locate the cache line
+  - `block offset` to select the word in the block
+
+---
+
+### 2️⃣ `comparator` (if separate)
+- Compares `tag` from CPU with stored `tag` in cache at `index`.
+- Checks valid bit.
+- **Outputs `hit` signal** if there is a valid match.
+
+---
+
+### 3️⃣ `cache_controller`
+- **Inputs**: `clk`, `rst`, `req_valid`, `req_type`, `hit`, `dirty_bit`, `ready_mem`
+- **Outputs**: control signals
+  - `read_en_mem`, `write_en_mem`
+  - `read_en_cache`, `write_en_cache`
+  - `refill`, `done_cache`
+- **Function**:
+  - Implements FSM (`IDLE`, `COMPARE`, `WRITE_BACK`, `WRITE_ALLOCATE`).
+  - On **read/write hit**: allows CPU to proceed.
+  - On **miss**:
+    - If clean: initiates refill.
+    - If dirty: performs write-back before refill.
+
+---
+
+### 4️⃣ `cache_memory`
+- **Inputs**:
+  - `clk`, `tag`, `index`, `blk_offset`
+  - `req_type`, `read_en_cache`, `write_en_cache`
+  - `ready_mem`, `data_in_mem [127:0]`, `data_in [31:0]`
+- **Outputs**:
+  - `data_out [31:0]` (to CPU)
+  - `dirty_block_out [127:0]` (to memory on write-back)
+  - `dirty_bit`, `hit`, `done_cache`
+- **Function**:
+  - On **read hit**: sends required word to CPU.
+  - On **write hit**: updates the word in the cache and sets the dirty bit.
+  - On **miss**:
+    - Provides dirty block if necessary.
+    - Accepts new block from memory on refill.
+
+---
+
+### 5️⃣ `main_memory` (abstract, if implemented)
+- Provides/receives 128-bit blocks during cache refill and write-back.
+- Uses handshake signals (`read_en_mem`, `write_en_mem`, `ready_mem`) with the cache.
+- Simulated using a memory model with preloaded data or random contents for testing.
+
+---
+
+
+
+
+
+
+
   
 
 
