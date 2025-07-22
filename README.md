@@ -123,8 +123,14 @@ Our first implementation is a direct-mapped cache with the following configurati
 - `address [31:0]`: Address to memory or next stage.
 - `dirty_blockout [127:0]`: The dirty block sent to memory if eviction occurs.
 
+  
+
 ## **DataPath **
 <img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.drawio.png" alt="Alt text" width="400"/>
+
+
+
+
 
 ### 🛠️ Datapath (Brief)
 
