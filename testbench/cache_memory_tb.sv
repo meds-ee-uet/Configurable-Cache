@@ -1,5 +1,7 @@
 // Code your testbench here
 // or browse Examples
+// Code your testbench here
+// or browse Examples
 `timescale 1ns/1ps
 
 
@@ -62,18 +64,9 @@ end
         refill = 0;
         data_in_mem = 0;
         data_in = 0;
-        // ---------- Refill a new block at index 0 ----------
-       // @(posedge clk);
-        //tag = 24'hAAA;
-        //index = 6'd5;
-        //blk_offset = 2'd1;
-        //refill = 1;
-        //write_en_cache = 1;
-        //data_in_mem = 128'h11112222333344445555666677778888;
-        @(posedge clk);
-        refill = 0;
-        write_en_cache = 0;
-        // ---------- Read Hit ----------
+        
+      
+        // READ HIT
         @(posedge clk);
         tag = 24'b101010111100110111100000;
         index = 6'd0;
@@ -83,12 +76,14 @@ end
         @(posedge clk);
         read_en_cache = 0;
         #10;
+        $display("-----------------------------------------------------");
         $display("=== READ HIT TEST ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
         $display("HIT: %0b", hit);
         $display("DATA_OUT: %h", data_out);
         $display("DIRTY_BIT: %0b\n", dirty_bit);
+        $display("-----------------------------------------------------");
         //---------- Write Hit ----------
         @(posedge clk);
         tag = 24'b000000000000101010111100;
@@ -100,29 +95,29 @@ end
         @(posedge clk);
         write_en_cache = 0;
         #1;
+        $display("-----------------------------------------------------");
         $display("=== WRITE HIT TEST ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
         $display("HIT: %0b", hit);
-        $display("WRITE DATA (data_in): %h", data_in);
         $display("Cache Line Dirty Bit: %0b", dirty_bit);
         $display("Cache DataIn: %0b", data_in);
-        $display("Cache Line at index %0d:\n%154b", index, uut.cache[index]);       
-        // ---------- Read Miss without Dirty Block ----------
-        @(posedge clk);
-       // Set up address and request type
+        $display("Cache Line at index %0d:\n%154b", index, uut.cache[index]); 
+        $display("-----------------------------------------------------");
+        // ---------- Read Miss withyout Dirt Block ----------
+        
+        @(posedge clk);      
         tag = 24'b000110100010101100111100;
         index = 6'b000010;
         blk_offset = 2'd0;
         req_type = 0;
         read_en_cache = 1;
-
-// Wait one cycle to evaluate hit *before* modifying anything
         @(posedge clk);
         read_en_cache = 0;
 
 // Display hit status BEFORE refill or write
-        $display("=== READ MISS PRE-REFILL CHECK ===");
+      $display("-----------------------------------------------------");
+        $display("=== READ MISS (with clean block PRE-REFILL CHECK ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
         $display("HIT: %0b", hit);
@@ -139,9 +134,10 @@ end
         refill = 0;
         write_en_cache = 0;
         @(posedge clk);
+      $display("=== READ MISS (with clean block POST-REFILL CHECK ===");
         $display("DIRTY_BIT: %0b", dirty_bit);
-        $display("Cache Line at index after modification  %0d:\n%154b", index, uut.cache[index]);
-
+        $display("Cache Line at index   %0d after modification :\n%154b", index, uut.cache[index]);
+        $display("-----------------------------------------------------");
         // ---------- Read Miss with Dirty Block ----------
         @(posedge clk);
         tag = 24'b001111000011110000111100;
@@ -153,37 +149,34 @@ end
         @(posedge clk);
         read_en_cache = 0;
         @(posedge clk);
-      $display("=== Dirty block to be evicted and related info ===");
+        $display("-----------------------------------------------------");
+        $display("=== Dirty block to be evicted and related info ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
-        $display("HIT: %0b", hit);
+        $display("HIT: %1b", hit);
         $display("DIRTY_BIT: %0b", dirty_bit);
         $display("Cache Line at index %0d:\n%154b", index, uut.cache[index]);
       
-      $display("Dirty Block Out: %128b", dirty_block_out);
+        $display("Dirty Block Out: %128b", dirty_block_out);
+        $display("-----------------------------------------------------");
        // ---------- Write Miss without Dirty Block ----------
         @(posedge clk);
-       // Set up address and request type
         tag = 24'b000110100010101100111100;
         index = 6'b000100;
         blk_offset = 2'd0;
         req_type = 1;
         data_in = 32'b11001010111111101011101010111110;
         write_en_cache = 1;
-
-// Wait one cycle to evaluate hit *before* modifying anything
         @(posedge clk);
         write_en_cache = 0;
-
+        $display("-----------------------------------------------------");
 // Display hit status BEFORE refill or write
-        $display("=== WRITE MISS PRE-REFILL CHECK ===");
+      $display("=== WRITE MISS (WITH CLEAN BLOCK) PRE-REFILL CHECK ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
         $display("HIT: %0b", hit);
         $display("DIRTY_BIT: %0b", dirty_bit);
-        $display("Cache Line at index %0d:\n%154b", index, uut.cache[index]);
-     
-
+        $display("Cache Line at index %0d:\n%154b", index, uut.cache[index]);    
 // Now trigger refill and write (simulate cache load from memory)
         refill = 1;
         write_en_cache = 1;
@@ -192,8 +185,10 @@ end
         refill = 0;
         write_en_cache = 0;
         @(posedge clk);
+        $display("=== WRITE MISS (WITH CLEAN BLOCK) POST-REFILL CHECK ===");
         $display("DIRTY_BIT: %0b", dirty_bit);
         $display("Cache Line at index after modification  %0d:\n%154b", index, uut.cache[index]);
+        $display("-----------------------------------------------------");
          //---------- Verifying Write Hit in case of write miss after allocating block  ----------
         @(posedge clk);
         tag = 24'b000110100010101100111100;
@@ -205,14 +200,16 @@ end
         @(posedge clk);
         write_en_cache = 0;
         #1;
-        $display("=== WRITE HIT TEST ===");
+        $display("-----------------------------------------------------");
+        $display("=== WRITE HIT TEST (FOR verifying Write Hit in case of write miss after allocating block  ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
         $display("HIT: %0b", hit);       
         $display("Cache Line Dirty Bit: %0b", dirty_bit);
         $display("WRITE DATA: %32b", data_in);
         $display("Cache Line at index %0d:\n%154b", index, uut.cache[index]);
-      // ---------- Read (compulsory)Miss without Dirty Block ----------
+        $display("-----------------------------------------------------");
+      // ---------- Read (compulsory) Miss without Dirty Block ----------
         @(posedge clk);
        // Set up address and request type
         tag = 24'b000110100010101100111100;
@@ -226,6 +223,7 @@ end
         read_en_cache = 0;
 
 // Display hit status BEFORE refill or write
+        $display("-----------------------------------------------------");
         $display("=== READ MISS PRE-REFILL CHECK ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
@@ -243,8 +241,10 @@ end
         refill = 0;
         write_en_cache = 0;
         @(posedge clk);
+      $display("=== READ MISS POST-REFILL CHECK ===");
         $display("DIRTY_BIT: %0b", dirty_bit);
         $display("Cache Line at index after modification  %0d:\n%154b", index, uut.cache[index]);
+        $display("-----------------------------------------------------");
         $finish;
     end
 endmodule
