@@ -1,4 +1,3 @@
-// Code your design here
 `define BLOCKS 64
 `define WORDS 4
 `define WORD_SIZE 32
@@ -11,7 +10,7 @@ module cache_memory (
     input logic req_type,                // 0=Read , 1=Write
     input logic read_en_cache,                   
     input logic write_en_cache,            
-    input logic refill,
+    input logic ready_mem,
     input [`BLOCK_SIZE-1:0] data_in_mem,     // 128-bit block from memory
     input logic [31:0] data_in, //32 bits data from cpu
     output logic [`BLOCK_SIZE-1:0] dirty_block_out,
@@ -37,14 +36,14 @@ module cache_memory (
         hit = (valid && (tag == stored_tag)) ? 1 : 0;
     end
     always_ff @(posedge clk) begin
-      if ( refill && write_en_cache) begin// && write_en_cache) begin
-        done_cache <= 0;
+      if (ready_mem && write_en_cache) begin
+        
         // refill block
         cache[index][0]      <= 1'b1;
         cache[index][1]      <= 1'b0;
         cache[index][25:2]   <= tag;
         cache[index][153:26] <= data_in_mem;
-        done_cache <= 1;
+        
     end 
     else if (req_type && hit && write_en_cache) begin
         // write hit
@@ -55,7 +54,7 @@ module cache_memory (
             2'b11: cache[index][153:122]  <= data_in;
         endcase
         cache[index][1] <= 1'b1; // mark as dirty
-        done_cache <= 1;
+        
     end 
     else if (!req_type && hit && read_en_cache) begin
         // read hit
@@ -65,14 +64,14 @@ module cache_memory (
             2'b10: data_out <= cache[index][121:90];
             2'b11: data_out <= cache[index][153:122];
         endcase
-        done_cache <= 1;
+        
     end 
     else begin
         data_out <= 32'd0; // 🔧 FIX: clear data_out on read miss or no read
     end
 
     // dirty block output logic (optional)
-      if (dirty_bit && !hit && read_en_cache) begin
+    if (dirty_bit && !hit && read_en_cache) begin
         dirty_block_out <= block;
     end else begin
         dirty_block_out <= '0; // 🔧 clear if not used
