@@ -14,7 +14,7 @@ module cache_tb;
     logic req_type;
     logic read_en_cache;
     logic write_en_cache;
-    logic refill;
+    logic ready_mem;
     logic [`BLOCK_SIZE-1:0] data_in_mem;
     logic [31:0] data_in;
 
@@ -33,7 +33,7 @@ module cache_tb;
         .req_type(req_type),
         .read_en_cache(read_en_cache),
         .write_en_cache(write_en_cache),
-        .refill(refill),
+        .ready_mem(ready_mem),
         .data_in_mem(data_in_mem),
         .data_in(data_in),
         .dirty_block_out(dirty_block_out),
@@ -61,7 +61,7 @@ end
         req_type = 0;
         read_en_cache = 0;
         write_en_cache = 0;
-        refill = 0;
+        ready_mem = 0;
         data_in_mem = 0;
         data_in = 0;
         
@@ -116,7 +116,7 @@ end
         read_en_cache = 0;
 
 // Display hit status BEFORE refill or write
-      $display("-----------------------------------------------------");
+        $display("-----------------------------------------------------");
         $display("=== READ MISS (with clean block PRE-REFILL CHECK ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
@@ -126,15 +126,15 @@ end
      
 
 // Now trigger refill and write (simulate cache load from memory)
-        refill = 1;
+        ready_mem = 1;
         write_en_cache = 1;
         data_in_mem = 128'b11001010111111101011101010111110111100001111000010101010101010100001110001111000111100001111000011110000111100001111000011110000;
 
         @(posedge clk);
-        refill = 0;
+        ready_mem = 0;
         write_en_cache = 0;
         @(posedge clk);
-      $display("=== READ MISS (with clean block POST-REFILL CHECK ===");
+        $display("=== READ MISS (with clean block POST-REFILL CHECK ===");
         $display("DIRTY_BIT: %0b", dirty_bit);
         $display("Cache Line at index   %0d after modification :\n%154b", index, uut.cache[index]);
         $display("-----------------------------------------------------");
@@ -171,18 +171,18 @@ end
         write_en_cache = 0;
         $display("-----------------------------------------------------");
 // Display hit status BEFORE refill or write
-      $display("=== WRITE MISS (WITH CLEAN BLOCK) PRE-REFILL CHECK ===");
+        $display("=== WRITE MISS (WITH CLEAN BLOCK) PRE-REFILL CHECK ===");
         $display("Time: %0t ns", $time);
         $display("Tag: %h, Index: %d, Offset: %d", tag, index, blk_offset);
         $display("HIT: %0b", hit);
         $display("DIRTY_BIT: %0b", dirty_bit);
         $display("Cache Line at index %0d:\n%154b", index, uut.cache[index]);    
 // Now trigger refill and write (simulate cache load from memory)
-        refill = 1;
+        ready_mem = 1;
         write_en_cache = 1;
         data_in_mem = 128'b11001010111111101011101010111110111100001111000010101010101010100001110001111000111100001111000011110000111100001111000011111111;
         @(posedge clk);
-        refill = 0;
+        ready_mem = 0;
         write_en_cache = 0;
         @(posedge clk);
         $display("=== WRITE MISS (WITH CLEAN BLOCK) POST-REFILL CHECK ===");
@@ -233,12 +233,12 @@ end
      
 
 // Now trigger refill and write (simulate cache load from memory)
-        refill = 1;
+        ready_mem = 1;
         write_en_cache = 1;
         data_in_mem = 128'b11001010111111101011101010111110111100001111000010101010101010100001110001111000111100001111000011110000111100001111000011110000;
 
         @(posedge clk);
-        refill = 0;
+        ready_mem = 0;
         write_en_cache = 0;
         @(posedge clk);
       $display("=== READ MISS POST-REFILL CHECK ===");
