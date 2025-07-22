@@ -150,6 +150,8 @@ Our first implementation is a direct-mapped cache with the following configurati
   ## ⚙️ Module-by-Module Explanation
 
 ### 1️⃣ `cache_decoder`
+<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/module_level/cache_decoder.drawio.png" alt="Alt text" width="400"/>
+
 - **Inputs**: `clk`, `address [31:0]`
 - **Outputs**: 
   - `tag [23:0]`
@@ -162,14 +164,10 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ---
 
-### 2️⃣ `comparator` (if separate)
-- Compares `tag` from CPU with stored `tag` in cache at `index`.
-- Checks valid bit.
-- **Outputs `hit` signal** if there is a valid match.
 
----
 
-### 3️⃣ `cache_controller`
+### 2️⃣ `cache_controller`
+<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/module_level/CACHE_CONTROLLER.drawio%20(1).png" alt="Alt text" width="400"/>
 - **Inputs**: `clk`, `rst`, `req_valid`, `req_type`, `hit`, `dirty_bit`, `ready_mem`
 - **Outputs**: control signals
   - `read_en_mem`, `write_en_mem`
@@ -184,7 +182,9 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ---
 
-### 4️⃣ `cache_memory`
+
+### 3️⃣ `cache_memory`
+<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/module_level/CACHE_MEMORY.drawio%20(1).png" alt="Alt text" width="400"/>
 - **Inputs**:
   - `clk`, `tag`, `index`, `blk_offset`
   - `req_type`, `read_en_cache`, `write_en_cache`
@@ -200,14 +200,45 @@ Our first implementation is a direct-mapped cache with the following configurati
     - Provides dirty block if necessary.
     - Accepts new block from memory on refill.
 
+
+    ###  `comparator` 
+
+  - Compares `tag` from CPU with stored `tag` in cache at `index`.
+  - Checks valid bit.
+  - **Outputs `hit` signal** if there is a valid match.
+
+
+
+   ###  `main_memory` (abstract, if implemented)
+  - Simulated using   random contents for testing.
+
+---
+## **FSM Explaination**
+## 🔄 Cache Controller FSM (Finite State Machine)
+
+| **State**      | **Conditions**                                            | **Next State**         | **Actions**                                      |
+|----------------|-----------------------------------------------------------|------------------------|--------------------------------------------------|
+| **IDLE**       | `req_valid = 1`                                           | `COMPARE`              | Wait for request from CPU                       |
+| **COMPARE**    | `hit = 1`                                                 | `IDLE`                 | Proceed with read/write, set `done_cache`      |
+|                | `!hit & !dirty_bit`                                       | `WRITE_ALLOCATE`       | Clean miss: fetch block from memory            |
+|                | `!hit & dirty_bit`                                        | `WRITE_BACK`           | Dirty miss: write back block to memory         |
+| **WRITE_BACK** | -                                                         | `WRITE_ALLOCATE`       | Write dirty block to memory                    |
+| **WRITE_ALLOCATE** | `ready_mem = 1`                                       | `COMPARE`              | Refill cache with new block                    |
+
 ---
 
-### 5️⃣ `main_memory` (abstract, if implemented)
-- Provides/receives 128-bit blocks during cache refill and write-back.
-- Uses handshake signals (`read_en_mem`, `write_en_mem`, `ready_mem`) with the cache.
-- Simulated using a memory model with preloaded data or random contents for testing.
+### 🔹 Key Points:
+- **IDLE:** Waits for a valid request (`req_valid`).
+- **COMPARE:** Checks for `hit`:
+  - If hit: complete operation, go back to `IDLE`.
+  - If miss:
+    - If clean: fetch new block.
+    - If dirty: write back block before fetching new block.
+- **WRITE_BACK:** Performs write-back of dirty block to memory.
+- **WRITE_ALLOCATE:** Loads new block into cache from memory, transitions back to `COMPARE` for re-check.
 
----
+✅ This **table makes your FSM logic easy to remember and debug during simulations**.
+
 
 
 
