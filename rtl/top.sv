@@ -36,7 +36,7 @@ module top (
     .ready_mem(ready_mem),
     .read_en_mem(read_en_mem),
     .write_en_mem(write_en_mem),
-    .write_en(write_en),
+    .write_en_cache(write_en_cache),
     .read_en_cache(read_en_cache),
     .refill(refill),
     );
@@ -54,7 +54,7 @@ module top (
     .dirty_block_out(dirty_block_out), // To memory
     .hit(hit),
     .data_out(data_out),
-    .dirty(dirty_bit),                // You'll need to expose this from cache
+    .dirty_bit(dirty_bit),                // You'll need to expose this from cache
     .done_cache(done_cache),               
     .acknowledge(acknowledge)             
    );
