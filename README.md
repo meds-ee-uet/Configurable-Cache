@@ -127,7 +127,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
   
 
-##   **DataPath **
+## **DataPath**
 <img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.drawio.png" alt="Alt text" width="400"/>
 
 
