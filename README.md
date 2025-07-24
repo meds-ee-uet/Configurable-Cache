@@ -170,6 +170,8 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ### 2️⃣ `cache_controller`
 <img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/module_level/CACHE_CONTROLLER.drawio%20(1).png" alt="Alt text" width="400"/>
+
+
 - **Inputs**: `clk`, `rst`, `req_valid`, `req_type`, `hit`, `dirty_bit`, `ready_mem`
 - **Outputs**: control signals
   - `read_en_mem`, `write_en_mem`
@@ -187,6 +189,8 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ### 3️⃣ `cache_memory`
 <img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/module_level/CACHE_MEMORY.drawio%20(1).png" alt="Alt text" width="400"/>
+
+
 - **Inputs**:
   - `clk`, `tag`, `index`, `blk_offset`
   - `req_type`, `read_en_cache`, `write_en_cache`
