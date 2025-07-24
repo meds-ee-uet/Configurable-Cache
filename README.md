@@ -244,6 +244,37 @@ Our first implementation is a direct-mapped cache with the following configurati
     - If dirty: write back block before fetching new block.
 - **WRITE_BACK:** Performs write-back of dirty block to memory.
 - **WRITE_ALLOCATE:** Loads new block into cache from memory, transitions back to `COMPARE` for re-check.
+## Testbenches
+## 🧪 `cache_decoder_tb` Testbench
+
+### 📌 Purpose
+
+This testbench verifies the **`cache_decoder` module** by:
+
+✅ Checking **correct extraction** of:
+- **Tag** (bits [31:8])
+- **Index** (bits [7:2])
+- **Block Offset** (bits [1:0])
+
+from a **32-bit address**, ensuring your cache’s address decoding logic is functioning correctly before integrating into the full cache pipeline.
+
+### ✅ Test Cases: 
+
+### Basic Extraction Test
+
+**Purpose:**  
+To verify that `cache_decoder` correctly extracts **Tag, Index, and Block Offset** fields from a given 32-bit address.
+
+#### 🛠️ Inputs
+
+| Signal   | Value                                                   |
+|----------|----------------------------------------------------------|
+| `address` | `32'b11011110101011011011111011101111` |
+
+### ✅ Expected Output:
+
+---
+
 
 
 
