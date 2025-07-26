@@ -1,4 +1,3 @@
-// FOLLOWING IS MY CACHE_CONTROLLER CODE.
 module cache_controller (
     input  logic clk,         // Clock signal
     input  logic rst,         // Asynchronous reset
@@ -32,6 +31,7 @@ module cache_controller (
         IDLE,
         COMPARE,
         WRITE_BACK,
+        WAIT_ALLOCATE,   // ✅ NEW STATE to insert 1-cycle gap
         WRITE_ALLOCATE,
         REFILL_DONE
     } state_t;
@@ -51,7 +51,8 @@ module cache_controller (
         next_state = current_state;
         case (current_state)
             IDLE:
-                if (req_valid) next_state = COMPARE;
+                if (req_valid)
+                    next_state = COMPARE;
 
             COMPARE:
                 if (hit)
@@ -62,11 +63,14 @@ module cache_controller (
                     next_state = WRITE_BACK;
 
             WRITE_BACK:
-                if (req_ready_mem) // Wait until memory accepts the write
-                    next_state = WRITE_ALLOCATE;
+                if (req_ready_mem) 
+                    next_state = WAIT_ALLOCATE;  // ✅ Now go to WAIT_ALLOCATE
+
+            WAIT_ALLOCATE:
+                next_state = WRITE_ALLOCATE;     // ✅ 1-cycle gap before issuing new request
 
             WRITE_ALLOCATE:
-                if (resp_valid_mem) // Wait until memory provides valid data
+                if (resp_valid_mem)
                     next_state = REFILL_DONE;
 
             REFILL_DONE:
@@ -110,6 +114,14 @@ module cache_controller (
                 end
             end
 
+            WAIT_ALLOCATE: begin
+                // ✅ New state: 1-cycle gap, no request to memory
+                req_valid_mem   = 0;
+                read_en_mem     = 0;
+                write_en_mem    = 0;
+                resp_ready_mem  = 0;
+            end
+
             WRITE_ALLOCATE: begin
                 req_valid_mem  = 1;    // Request to read new block
                 if (req_ready_mem) begin
@@ -133,3 +145,4 @@ module cache_controller (
     end
 
 endmodule
+
