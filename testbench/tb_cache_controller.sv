@@ -1,0 +1,171 @@
+`timescale 1ns/1ps
+
+module tb_cache_controller_all_cases;
+
+    // DUT Inputs
+    reg clk, rst;
+    reg req_valid, req_type, hit, dirty_bit;
+
+    // Handshake signals
+    reg req_ready_mem;
+    wire req_valid_mem;
+    reg resp_valid_mem;
+    wire resp_ready_mem;
+
+    // DUT Outputs
+    wire read_en_mem, write_en_mem, write_en, read_en_cache, write_en_cache, refill, done_cache;
+
+    // Instantiate DUT
+    cache_controller dut (
+        .clk(clk),
+        .rst(rst),
+        .req_valid(req_valid),
+        .req_type(req_type),
+        .hit(hit),
+        .dirty_bit(dirty_bit),
+        .req_ready_mem(req_ready_mem),
+        .req_valid_mem(req_valid_mem),
+        .resp_valid_mem(resp_valid_mem),
+        .resp_ready_mem(resp_ready_mem),
+        .read_en_mem(read_en_mem),
+        .write_en_mem(write_en_mem),
+        .write_en(write_en),
+        .read_en_cache(read_en_cache),
+        .write_en_cache(write_en_cache),
+        .refill(refill),
+        .done_cache(done_cache)
+    );
+
+    // Clock generation (10ns)
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // Function to get readable state names
+    function string state_name(input [3:0] state);
+        case (state)
+            0: state_name = "IDLE";
+            1: state_name = "COMPARE";
+            2: state_name = "WRITE_BACK";
+            3: state_name = "WAIT_ALLOCATE";
+            4: state_name = "WRITE_ALLOCATE";
+            5: state_name = "REFILL_DONE";
+            default: state_name = "UNKNOWN";
+        endcase
+    endfunction
+
+    // ✅ Unified Display Task
+    task print_state(input string test_name);
+        $display("[%s] [TIME %0t] STATE=%s", test_name, $time, state_name(dut.current_state));
+        $display("Inputs: req_valid=%0b, req_type=%0b, hit=%0b, dirty_bit=%0b",
+                  req_valid, req_type, hit, dirty_bit);
+        $display("Handshake: req_valid_mem=%0b, req_ready_mem=%0b, resp_valid_mem=%0b, resp_ready_mem=%0b",
+                  req_valid_mem, req_ready_mem, resp_valid_mem, resp_ready_mem);
+        $display("Outputs: read_mem=%0b, write_mem=%0b, read_cache=%0b, write_cache=%0b, refill=%0b, done=%0b\n",
+                  read_en_mem, write_en_mem, read_en_cache, write_en_cache, refill, done_cache);
+    endtask
+
+    // ✅ VCD dump (for waveform if needed)
+    initial begin
+        $dumpfile("all_cases.vcd");
+        $dumpvars(0, tb_cache_controller_all_cases);
+    end
+
+    // ---------- INDIVIDUAL TEST TASKS (ALL STATES PRINTED) ----------
+
+    task run_read_hit();
+        $display("\n=============== ✅ TEST: READ HIT ===============");
+        req_valid=1; req_type=0; hit=1; dirty_bit=0;
+        repeat(2) @(posedge clk) print_state("READ HIT");
+        req_valid=0; hit=0;
+        @(posedge clk) print_state("READ HIT");
+        wait(dut.current_state==0);
+    endtask
+
+    task run_write_hit();
+        $display("\n=============== ✅ TEST: WRITE HIT ===============");
+        req_valid=1; req_type=1; hit=1; dirty_bit=0;
+        repeat(2) @(posedge clk) print_state("WRITE HIT");
+        req_valid=0; hit=0;
+        @(posedge clk) print_state("WRITE HIT");
+        wait(dut.current_state==0);
+    endtask
+
+    task run_read_miss_clean();
+        $display("\n=============== ✅ TEST: READ MISS CLEAN ===============");
+        req_valid=1; req_type=0; hit=0; dirty_bit=0;
+        @(posedge clk) print_state("READ MISS CLEAN");   // COMPARE
+        @(posedge clk) print_state("READ MISS CLEAN");   // WRITE_ALLOCATE
+        repeat(2) @(posedge clk) print_state("READ MISS CLEAN");
+        resp_valid_mem=1; @(posedge clk) print_state("READ MISS CLEAN"); // REFILL_DONE
+        resp_valid_mem=0;
+        req_valid=0;
+        @(posedge clk) print_state("READ MISS CLEAN");   // IDLE
+        wait(dut.current_state==0);
+    endtask
+
+    task run_read_miss_dirty();
+        $display("\n=============== ✅ TEST: READ MISS DIRTY ===============");
+        req_valid=1; req_type=0; hit=0; dirty_bit=1;
+        @(posedge clk) print_state("READ MISS DIRTY");  // COMPARE
+        @(posedge clk) print_state("READ MISS DIRTY");  // WRITE_BACK
+        repeat(2) @(posedge clk) print_state("READ MISS DIRTY");
+        @(posedge clk) print_state("READ MISS DIRTY");  // WAIT_ALLOCATE
+        @(posedge clk) print_state("READ MISS DIRTY");  // WRITE_ALLOCATE
+        repeat(2) @(posedge clk) print_state("READ MISS DIRTY");
+        resp_valid_mem=1; @(posedge clk) print_state("READ MISS DIRTY"); // REFILL_DONE
+        resp_valid_mem=0;
+        req_valid=0;
+        @(posedge clk) print_state("READ MISS DIRTY");  // IDLE
+        wait(dut.current_state==0);
+    endtask
+
+    task run_write_miss_clean();
+        $display("\n=============== ✅ TEST: WRITE MISS CLEAN ===============");
+        req_valid=1; req_type=1; hit=0; dirty_bit=0;
+        @(posedge clk) print_state("WRITE MISS CLEAN"); // COMPARE
+        @(posedge clk) print_state("WRITE MISS CLEAN"); // WRITE_ALLOCATE
+        repeat(2) @(posedge clk) print_state("WRITE MISS CLEAN");
+        resp_valid_mem=1; @(posedge clk) print_state("WRITE MISS CLEAN"); // REFILL_DONE
+        resp_valid_mem=0;
+        req_valid=0;
+        @(posedge clk) print_state("WRITE MISS CLEAN"); // IDLE
+        wait(dut.current_state==0);
+    endtask
+
+    task run_write_miss_dirty();
+        $display("\n=============== ✅ TEST: WRITE MISS DIRTY ===============");
+        req_valid=1; req_type=1; hit=0; dirty_bit=1;
+        @(posedge clk) print_state("WRITE MISS DIRTY"); // COMPARE
+        @(posedge clk) print_state("WRITE MISS DIRTY"); // WRITE_BACK
+        repeat(2) @(posedge clk) print_state("WRITE MISS DIRTY");
+        @(posedge clk) print_state("WRITE MISS DIRTY"); // WAIT_ALLOCATE
+        @(posedge clk) print_state("WRITE MISS DIRTY"); // WRITE_ALLOCATE
+        repeat(2) @(posedge clk) print_state("WRITE MISS DIRTY");
+        resp_valid_mem=1; @(posedge clk) print_state("WRITE MISS DIRTY"); // REFILL_DONE
+        resp_valid_mem=0;
+        req_valid=0;
+        @(posedge clk) print_state("WRITE MISS DIRTY"); // IDLE
+        wait(dut.current_state==0);
+    endtask
+
+    // ---------- MAIN TEST SEQUENCE ----------
+    initial begin
+        // Init
+        rst=1; req_valid=0; req_type=0; hit=0; dirty_bit=0;
+        req_ready_mem=1; resp_valid_mem=0;
+        #12 rst=0; @(posedge clk);
+
+        run_read_hit();
+        run_write_hit();
+        run_read_miss_clean();
+        run_read_miss_dirty();
+        run_write_miss_clean();
+        run_write_miss_dirty();
+
+        $display("\n??? ✅ ALL 6 TEST CASES COMPLETED SUCCESSFULLY ???");
+        $finish;
+    end
+
+endmodule
