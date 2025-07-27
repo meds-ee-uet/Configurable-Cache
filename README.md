@@ -171,20 +171,53 @@ Our first implementation is a direct-mapped cache with the following configurati
 ### 2️⃣ `cache_controller`
 <img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/module_level/CACHE_CONTROLLER.drawio%20(1).png" alt="Alt text" width="400"/>
 
+- **Inputs**:  
+  - `clk`, `rst`  
+  - `req_valid`, `req_type` (0 = read, 1 = write)  
+  - `hit`, `dirty_bit`  
+  - `req_ready_mem`, `resp_valid_mem`  
 
-- **Inputs**: `clk`, `rst`, `req_valid`, `req_type`, `hit`, `dirty_bit`, `ready_mem`
-- **Outputs**: control signals
-  - `read_en_mem`, `write_en_mem`
-  - `read_en_cache`, `write_en_cache`
-  - `refill`, `done_cache`
-- **Function**:
-  - Implements FSM (`IDLE`, `COMPARE`, `WRITE_BACK`, `WRITE_ALLOCATE`).
-  - On **read/write hit**: allows CPU to proceed.
+- **Outputs**:  
+  - **Main Memory Interface**:  
+    - `req_valid_mem`, `resp_ready_mem`, `read_en_mem`, `write_en_mem`  
+  - **Cache Interface**:  
+    - `read_en_cache`, `write_en_cache`, `write_en`, `refill`, `done_cache`
+
+- **Function**:  
+  - Implements FSM with the following states:  
+    `IDLE`, `COMPARE`, `WRITE_BACK`, `WAIT_ALLOCATE`, `WRITE_ALLOCATE`, `REFILL_DONE`
+  - On **read/write hit**: allows CPU to complete operation directly.
   - On **miss**:
-    - If clean: initiates refill.
-    - If dirty: performs write-back before refill.
+    - If **clean**: refills cache from memory.
+    - If **dirty**: writes back to memory first, then refills.
+  - `WAIT_ALLOCATE` provides a separation cycle between memory write and read.
 
 ---
+
+## 💡 FSM Explanation — Cache Controller
+
+| **State**         | **Conditions**                                  | **Next State**        | **Actions**                                                          |
+|-------------------|--------------------------------------------------|------------------------|----------------------------------------------------------------------|
+| **IDLE**          | `req_valid = 1`                                  | `COMPARE`              | Wait for valid CPU request                                           |
+| **COMPARE**       | `hit = 1`                                        | `IDLE`                 | Complete read/write, assert `done_cache`                            |
+|                   | `!hit & !dirty_bit`                              | `WRITE_ALLOCATE`       | Clean miss: proceed to refill                                       |
+|                   | `!hit & dirty_bit`                               | `WRITE_BACK`           | Dirty miss: write back required                                     |
+| **WRITE_BACK**    | `req_ready_mem = 1`                              | `WAIT_ALLOCATE`        | Issue write-back to memory                                          |
+| **WAIT_ALLOCATE** | (1-cycle wait after write-back)                  | `WRITE_ALLOCATE`       | Prevent overlap between write-back and refill request               |
+| **WRITE_ALLOCATE**| `resp_valid_mem = 1`                             | `REFILL_DONE`          | Request memory read, refill cache when data arrives                 |
+| **REFILL_DONE**   | -                                                | `IDLE`                 | Finalize refill; if write requested, perform CPU write after refill |
+
+---
+
+### 🔑 Key Points
+
+- `WAIT_ALLOCATE` ensures **clean separation** between write-back and memory read (refill).
+- `write_en_mem` is asserted only **during `WRITE_BACK`** when memory is ready.
+- `read_en_mem` is asserted **during `WRITE_ALLOCATE`** when memory is ready.
+- `write_en_cache` is used:
+  - For **CPU write** in `COMPARE` (on hit) or in `REFILL_DONE` (after refill).
+  - For **writing refill data** during `WRITE_ALLOCATE`.
+- `done_cache` is asserted in `COMPARE` (on hit) and `REFILL_DONE`.
 
 
 ### 3️⃣ `cache_memory`
@@ -221,29 +254,7 @@ Our first implementation is a direct-mapped cache with the following configurati
   - Simulated using   random contents for testing.
 
 ---
-## **FSM Explaination**
-##  Cache Controller FSM (Finite State Machine)
 
-| **State**      | **Conditions**                                            | **Next State**         | **Actions**                                      |
-|----------------|-----------------------------------------------------------|------------------------|--------------------------------------------------|
-| **IDLE**       | `req_valid = 1`                                           | `COMPARE`              | Wait for request from CPU                       |
-| **COMPARE**    | `hit = 1`                                                 | `IDLE`                 | Proceed with read/write, set `done_cache`      |
-|                | `!hit & !dirty_bit`                                       | `WRITE_ALLOCATE`       | Clean miss: fetch block from memory            |
-|                | `!hit & dirty_bit`                                        | `WRITE_BACK`           | Dirty miss: write back block to memory         |
-| **WRITE_BACK** | -                                                         | `WRITE_ALLOCATE`       | Write dirty block to memory                    |
-| **WRITE_ALLOCATE** | `ready_mem = 1`                                       | `COMPARE`              | Refill cache with new block                    |
-
----
-
-###  Key Points:
-- **IDLE:** Waits for a valid request (`req_valid`).
-- **COMPARE:** Checks for `hit`:
-  - If hit: complete operation, go back to `IDLE`.
-  - If miss:
-    - If clean: fetch new block.
-    - If dirty: write back block before fetching new block.
-- **WRITE_BACK:** Performs write-back of dirty block to memory.
-- **WRITE_ALLOCATE:** Loads new block into cache from memory, transitions back to `COMPARE` for re-check.
 ## Testbenches
 ##  `cache_decoder_tb` Testbench
 
