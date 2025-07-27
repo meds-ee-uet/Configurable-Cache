@@ -254,6 +254,16 @@ Our first implementation is a direct-mapped cache with the following configurati
   - Simulated using   random contents for testing.
 
 ---
+### 🧾 Header File for Cache Specifications
+
+A header file (`cache_defs.sv`) has been added to centralize the cache controller's specifications. It includes:
+
+- FSM state definitions using `typedef enum`.
+- Common parameters for consistency.
+- Shared signal names and interface conventions.
+
+🔧 **Purpose**: Improves modularity, avoids code duplication, and simplifies updates across modules.
+
 
 ## Testbenches
 ##  `cache_decoder_tb` Testbench
