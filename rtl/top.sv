@@ -33,13 +33,19 @@ module top (
     .req_type(req_type),
     .hit(hit),
     .dirty_bit(dirty_bit),
-    .ready_mem(ready_mem),
+    .req_ready_mem(req_ready_mem),
+    .req_valid_mem(req_valid_mem),
+    .resp_valid_mem(resp_valid_mem),
+    .resp_ready_mem(resp_ready_mem),
     .read_en_mem(read_en_mem),
     .write_en_mem(write_en_mem),
-    .write_en_cache(write_en_cache),
+    .write_en(write_en),
     .read_en_cache(read_en_cache),
-    .refill(refill)
-    );
+    .write_en_cache(write_en_cache),
+    .refill(refill),
+    .done_cache(done_cache)
+);
+
     cache_memory cache (
     .clk(clk),
     .tag(tag),
