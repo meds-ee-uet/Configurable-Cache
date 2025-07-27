@@ -222,7 +222,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ---
 ## **FSM Explaination**
-## 🔄 Cache Controller FSM (Finite State Machine)
+##  Cache Controller FSM (Finite State Machine)
 
 | **State**      | **Conditions**                                            | **Next State**         | **Actions**                                      |
 |----------------|-----------------------------------------------------------|------------------------|--------------------------------------------------|
@@ -235,7 +235,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ---
 
-### 🔹 Key Points:
+###  Key Points:
 - **IDLE:** Waits for a valid request (`req_valid`).
 - **COMPARE:** Checks for `hit`:
   - If hit: complete operation, go back to `IDLE`.
@@ -245,35 +245,126 @@ Our first implementation is a direct-mapped cache with the following configurati
 - **WRITE_BACK:** Performs write-back of dirty block to memory.
 - **WRITE_ALLOCATE:** Loads new block into cache from memory, transitions back to `COMPARE` for re-check.
 ## Testbenches
-## 🧪 `cache_decoder_tb` Testbench
+##  `cache_decoder_tb` Testbench
 
 ### 📌 Purpose
 
 This testbench verifies the **`cache_decoder` module** by:
 
-✅ Checking **correct extraction** of:
+ Checking **correct extraction** of:
 - **Tag** (bits [31:8])
 - **Index** (bits [7:2])
 - **Block Offset** (bits [1:0])
 
 from a **32-bit address**, ensuring your cache’s address decoding logic is functioning correctly before integrating into the full cache pipeline.
 
-### ✅ Test Cases: 
+###  Test Cases: 
 
 ### Basic Extraction Test
 
 **Purpose:**  
 To verify that `cache_decoder` correctly extracts **Tag, Index, and Block Offset** fields from a given 32-bit address.
 
-#### 🛠️ Inputs
+#### 🛠 Inputs
 
 | Signal   | Value                                                   |
 |----------|----------------------------------------------------------|
 | `address` | `32'b11011110101011011011111011101111` |
 
-### ✅ Expected Output:
+###  Expected Output:
 
 ---
+#  Testbench: `tb_cache_controller_all_cases`
+
+This SystemVerilog testbench is designed to **verify the behavior of a `cache_controller` module** under a comprehensive set of scenarios covering read and write requests, cache hits, and cache misses (both clean and dirty).
+
+## 📌 Purpose
+
+The main objective of this testbench is to validate that the `cache_controller` FSM transitions through all relevant states correctly and produces the expected control signals based on various cache request conditions.
+
+It tests the controller under **six different scenarios**, checking state transitions and output signals for correctness.
+
+---
+
+## 🔌 DUT Interface
+
+###  Inputs
+| Signal         | Description                                    |
+|----------------|------------------------------------------------|
+| `clk`          | Clock signal (10ns period)                     |
+| `rst`          | Reset signal (active high)                     |
+| `req_valid`    | Cache request validity flag                    |
+| `req_type`     | Type of request: `0 = Read`, `1 = Write`       |
+| `hit`          | Indicates whether requested data is in cache   |
+| `dirty_bit`    | Indicates if the cache block is dirty          |
+| `req_ready_mem`| Main memory ready to receive request           |
+| `resp_valid_mem`| Memory response is ready                      |
+
+###  Outputs
+| Signal            | Description                                   |
+|-------------------|-----------------------------------------------|
+| `req_valid_mem`   | Indicates if memory request is being sent     |
+| `resp_ready_mem`  | Controller ready to accept memory response    |
+| `read_en_mem`     | Read enable signal to memory                  |
+| `write_en_mem`    | Write enable signal to memory                 |
+| `read_en_cache`   | Read enable signal for cache                  |
+| `write_en_cache`  | Write enable signal for cache                 |
+| `write_en`        | Write enable (generic)                        |
+| `refill`          | Signals when block is refilled from memory    |
+| `done_cache`      | Indicates cache transaction is completed      |
+
+---
+
+##  Test Cases
+
+Each test case triggers different controller states and prints internal FSM state and relevant I/O signals.
+
+###  Test 1: Read Hit
+- **Inputs:** `req_valid=1`, `req_type=0`, `hit=1`, `dirty_bit=0`
+- **Expected:** Controller serves request directly from cache (`read_en_cache=1`), transitions to `IDLE`.
+
+###  Test 2: Write Hit
+- **Inputs:** `req_valid=1`, `req_type=1`, `hit=1`, `dirty_bit=0`
+- **Expected:** Write directly to cache (`write_en_cache=1`), then return to `IDLE`.
+
+###  Test 3: Read Miss (Clean)
+- **Inputs:** `req_valid=1`, `req_type=0`, `hit=0`, `dirty_bit=0`
+- **Expected FSM States:**
+  - `COMPARE` → `WRITE_ALLOCATE` → wait for `resp_valid_mem` → `REFILL_DONE` → `IDLE`
+
+### Test 4: Read Miss (Dirty)
+- **Inputs:** `req_valid=1`, `req_type=0`, `hit=0`, `dirty_bit=1`
+- **Expected FSM States:**
+  - `COMPARE` → `WRITE_BACK` → `WAIT_ALLOCATE` → `WRITE_ALLOCATE` → `REFILL_DONE` → `IDLE`
+
+###  Test 5: Write Miss (Clean)
+- **Inputs:** `req_valid=1`, `req_type=1`, `hit=0`, `dirty_bit=0`
+- **Expected FSM States:**
+  - `COMPARE` → `WRITE_ALLOCATE` → `REFILL_DONE` → `IDLE`
+
+###  Test 6: Write Miss (Dirty)
+- **Inputs:** `req_valid=1`, `req_type=1`, `hit=0`, `dirty_bit=1`
+- **Expected FSM States:**
+  - `COMPARE` → `WRITE_BACK` → `WAIT_ALLOCATE` → `WRITE_ALLOCATE` → `REFILL_DONE` → `IDLE`
+
+---
+
+##  Features of the Testbench
+
+- **Reusable Tasks:** Each test is wrapped in a `task` for clean and modular design.
+- **Clock Generation:** 10ns clock with toggling every 5ns.
+- **State Name Decoder:** Converts FSM numeric states to human-readable strings for debugging.
+- **Unified Output Printer:** `print_state` task provides snapshot of controller behavior at every clock cycle.
+- **VCD Dumping:** Waveform file (`all_cases.vcd`) generated for GTKWave or similar tools.
+
+---
+
+##  Expected Output
+
+At the end of the simulation, this message confirms success:
+---
+
+
 
 
 
