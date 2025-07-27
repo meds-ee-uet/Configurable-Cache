@@ -169,7 +169,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 ### 2️⃣ `cache_controller`
-<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/module_level/CACHE_CONTROLLER.drawio%20(1).png" alt="Alt text" width="400"/>
+<img src="https://github.com/meds-uet/Configurable_cache/blob/main/docs/module_level/CACHE_CONTROLLER.drawio.png" alt="Alt text" width="400"/>
 
 - **Inputs**:  
   - `clk`, `rst`  
