@@ -363,7 +363,122 @@ Each test case triggers different controller states and prints internal FSM stat
 
 At the end of the simulation, this message confirms success:
 ---
+#  Testbench: `cache_tb`
 
+This SystemVerilog testbench is built to **verify and validate the functionality of the `cache_memory` module**, which simulates the data-handling behavior of a cache memory unit. It rigorously exercises read and write operations in both hit and miss scenarios, with detailed inspection of dirty bit behavior and memory refill.
+
+---
+
+##  Purpose
+
+- To simulate and verify the correct behavior of the **cache memory unit** in handling various types of requests.
+- To observe cache hits, misses (both clean and dirty), evictions, and refills from main memory.
+- To check the internal structure of the cache, including **data storage**, **dirty bit updates**, and **data evictions**.
+
+---
+
+## 🔌 DUT Interface
+
+###  Inputs
+
+| Signal           | Description                                                         |
+|------------------|---------------------------------------------------------------------|
+| `clk`            | Clock signal (10ns period)                                          |
+| `tag`            | Tag portion of the memory address                                   |
+| `index`          | Index to select a specific cache block                              |
+| `blk_offset`     | Offset to select word inside a block                                |
+| `req_type`       | 0 = Read, 1 = Write                                                 |
+| `read_en_cache`  | Enable signal for read operation                                    |
+| `write_en_cache` | Enable signal for write operation                                   |
+| `refill`         | Signal to trigger block refill from memory                          |
+| `data_in_mem`    | Data coming from memory to cache (used during refill)               |
+| `data_in`        | Word-level data input for write operations                          |
+
+###  Outputs
+
+| Signal             | Description                                                       |
+|--------------------|-------------------------------------------------------------------|
+| `data_out`         | Output word read from cache                                       |
+| `hit`              | 1 if the cache access was a hit, 0 if it was a miss              |
+| `dirty_bit`        | Indicates if the cache block has been modified                   |
+| `dirty_block_out`  | Full block to be written back to memory on dirty eviction        |
+| `done_cache`       | Operation done flag (optional usage)
+
+---
+
+##  Test Cases
+
+The testbench runs a comprehensive set of operations designed to test key cache behaviors:
+
+###  1. **Read Hit**
+- **Setup:** Tag/index matches an initialized cache entry.
+- **Action:** `read_en_cache = 1`
+- **Expected:** `hit = 1`, `data_out` returns correct word, `dirty_bit` remains unchanged.
+
+---
+
+###  2. **Write Hit**
+- **Setup:** Tag/index matches valid entry, write to word.
+- **Action:** `write_en_cache = 1`, provide `data_in`.
+- **Expected:** `hit = 1`, data updated in cache, `dirty_bit = 1`.
+
+---
+
+###  3. **Read Miss (Clean Block)**
+- **Setup:** Cache line is clean and tag mismatch.
+- **Action:** Trigger `read_en_cache`, then refill and write.
+- **Expected:**
+  - `hit = 0`, `dirty_bit = 0`
+  - Block is replaced with new `data_in_mem`, no dirty eviction.
+
+---
+
+###  4. **Read Miss (Dirty Block)**
+- **Setup:** Tag mismatch but line is dirty.
+- **Action:** Trigger read, check `dirty_block_out`.
+- **Expected:**
+  - `hit = 0`, `dirty_bit = 1`
+  - `dirty_block_out` holds block that would be evicted.
+
+---
+
+###  5. **Write Miss (Clean Block)**
+- **Setup:** Index points to clean block with tag mismatch.
+- **Action:** Write new data after refill.
+- **Expected:**
+  - Initial `hit = 0`
+  - After refill and write, `dirty_bit = 1`
+
+---
+
+###  6. **Write Hit After Write Miss**
+- **Setup:** After refill from write miss, same block written again.
+- **Action:** `write_en_cache = 1`
+- **Expected:** `hit = 1`, data written correctly, `dirty_bit = 1`
+
+---
+
+### 7. **Compulsory Read Miss (Empty/Invalid Entry)**
+- **Setup:** Accessing an index not previously filled.
+- **Action:** `read_en_cache = 1`, then refill.
+- **Expected:**
+  - `hit = 0`, block gets refilled.
+  - `data_out` becomes valid after refill.
+
+---
+
+##  Features of the Testbench
+
+- **Preloaded Cache Content:** Cache is initialized with valid binary blocks for controlled testing.
+- **Cycle-by-Cycle Inspection:** Uses `@(posedge clk)` for synchronized operations.
+- **Waveform-Friendly:** Internal cache content is printed after modifications.
+- **Readable Logs:** Each test displays clear headers and results for `hit`, `dirty_bit`, and contents.
+
+---
+
+## Expected Output
+
+---
 
 
 
