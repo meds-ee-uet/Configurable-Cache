@@ -1,3 +1,5 @@
 site_name: CONFIGURABLE cache Docs
+docs_dir: Direct_Mapped_Cache/docs
+
 nav:
-  - Home/Direct_Mapped_Cache/docs: index.md
+  - Home: index.md
