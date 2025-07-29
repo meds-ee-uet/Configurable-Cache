@@ -107,7 +107,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ## **TOP LEVEL DIAGRAM**:
 <div align="center">
-  <img src="[https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL%20.png" width="600" height="400">
+  <img src="https://raw.githubusercontent.com/meds-uet/Configurable_cache/main/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL%20.png" width="600" height="400">
 </div>
 
 ## **Inputs:**
