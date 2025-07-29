@@ -131,14 +131,15 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ## **DataPath**
 <div align="center">
-  <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.png" width="600" height="400">
+  <img src="https://raw.githubusercontent.com/meds-uet/Configurable_cache/main/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.png" width="600" height="400">
 </div>
 
 
 
 
 
-### 🛠️ Datapath (Brief)
+
+###  Datapath (Brief)
 
 - CPU sends `req_valid`, `req_type`, `address [31:0]`, `data_in [31:0]` (for writes).
 - **Cache Decoder** splits the address into `tag`, `index`, `block offset`.
@@ -156,7 +157,10 @@ Our first implementation is a direct-mapped cache with the following configurati
   ## ⚙️ Module-by-Module Explanation
 
 ### 1️⃣ `cache_decoder`
-<img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/module_level/cache_decoder.png" alt="Alt text" width="400"/>
+<div align="center">
+  <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/module_level/cache_decoder.png" width="600" height="400">
+</div>
+
 
 - **Inputs**: `clk`, `address [31:0]`
 - **Outputs**: 
@@ -173,7 +177,9 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 ### 2️⃣ `cache_controller`
+<div align="center">
 <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/module_level/CACHE_CONTROLLER.png" alt="Alt text" width="400"/>
+</div>
 
 - **Inputs**:  
   - `clk`, `rst`  
@@ -198,7 +204,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ---
 
-## 💡 FSM Explanation — Cache Controller
+##  FSM Explanation — Cache Controller
 
 | **State**         | **Conditions**                                  | **Next State**        | **Actions**                                                          |
 |-------------------|--------------------------------------------------|------------------------|----------------------------------------------------------------------|
@@ -213,7 +219,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ---
 
-### 🔑 Key Points
+###  Key Points
 
 - `WAIT_ALLOCATE` ensures **clean separation** between write-back and memory read (refill).
 - `write_en_mem` is asserted only **during `WRITE_BACK`** when memory is ready.
@@ -225,7 +231,9 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 ### 3️⃣ `cache_memory`
+<div align="center">
 <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/module_level/CACHE_MEMORY.png" alt="Alt text" width="400"/>
+</div>
 
 
 - **Inputs**:
