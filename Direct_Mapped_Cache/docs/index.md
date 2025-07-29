@@ -162,6 +162,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 </div>
 
 
+
 - **Inputs**: `clk`, `address [31:0]`
 - **Outputs**: 
   - `tag [23:0]`
