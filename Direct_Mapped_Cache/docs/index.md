@@ -158,7 +158,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ### 1️⃣ `cache_decoder`
 <div align="center">
-  <img src="https://raw.githubusercontent.com/meds-uet/Configurable_cache/main/Direct_Mapped_Cache/docs/module_level/cache_decoder.png" width="600" height="400">
+  <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/module_level/cache_decoder.png" width="600" height="400">
 </div>
 
 
