@@ -106,9 +106,10 @@ Our first implementation is a direct-mapped cache with the following configurati
 | Total Bits/Line     | 154 bits               |  
 
 ## **TOP LEVEL DIAGRAM**:
-<div align="center">
-  <img src="https://raw.githubusercontent.com/meds-uet/Configurable_cache/main/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL%20.png" width="600" height="400">
+<<div align="center">
+  <img src="./Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png" width="600" height="400">
 </div>
+
 
 ## **Inputs:**
 - `req_type`: Whether you want to read (`req_type = 0`) or write.
