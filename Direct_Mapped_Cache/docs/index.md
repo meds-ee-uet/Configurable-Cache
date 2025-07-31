@@ -131,7 +131,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ## **DataPath**
 <div align="center">
-  <img src="https://raw.githubusercontent.com/meds-uet/Configurable_cache/main/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.png" width="600" height="400">
+  <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER%20(1).png" width="600" height="400">
 </div>
 
 
