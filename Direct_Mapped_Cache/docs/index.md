@@ -107,7 +107,9 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ## **TOP LEVEL DIAGRAM**:
 <div align="center">
-  <img src="./TOP_BLOCK_LEVEL/CACHE_TOPLEVEL (2).png" width="600" height="400">
+
+![](TOP_BLOCK_LEVEL/CACHE_TOPLEVEL_2.png)
+
 </div>
 
 ## **Inputs:**
