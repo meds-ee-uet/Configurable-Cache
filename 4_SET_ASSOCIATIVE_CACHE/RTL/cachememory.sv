@@ -27,7 +27,8 @@ module cache_memory #(
     output logic dirty_bit
 );    typedef struct packed {
         logic b1, b2, b3;
-    } tree_bits;    typedef logic [BLOCK_SIZE + TAG_WIDTH + 2 - 1 : 0] cache_line_t;
+    } tree_bits;    
+    typedef logic [BLOCK_SIZE + TAG_WIDTH + 2 - 1 : 0] cache_line_t;
     cache_line_t cache [NUM_SETS-1:0][3:0];
     tree_bits plru [NUM_SETS-1:0];    typedef struct packed {
         logic valid;
@@ -35,7 +36,8 @@ module cache_memory #(
         logic [TAG_WIDTH-1:0] tag;
         logic [BLOCK_SIZE-1:0] block;
         logic hit;
-    } cache_info_t;    cache_info_t info0, info1, info2, info3;    always_comb begin
+    } cache_info_t;    cache_info_t info0, info1, info2, info3;    
+    always_comb begin
         info0.valid = cache[index][0][0];
         info0.dirty = cache[index][0][1];
         info0.tag   = cache[index][0][TAG_WIDTH+1:2];
@@ -135,7 +137,19 @@ module cache_memory #(
                         cache[index][3][1] <= 0;
                         cache[index][3][TAG_WIDTH+1:2] <= tag;
                         cache[index][3][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
-                        update_tree_on_access(plru[index], 3);
+                        update_tree_on_access(plru[index], 3);module cache_decoder(clk, address, tag, index, blk_offset);
+    input logic clk;
+    input logic [31:0] address;
+    output logic [23:0] tag;
+    output logic [5:0] index;
+    output logic [1:0] blk_offset;
+    
+    
+    assign tag = address[31:8];
+    assign index = address[7:2];
+    assign blk_offset = address[1:0];
+    
+endmodule
                     end else if (read_en_cache && write_en_mem) begin
                         dirty_block_out <= info3.block;
                         cache[index][3][1] <= 0;
