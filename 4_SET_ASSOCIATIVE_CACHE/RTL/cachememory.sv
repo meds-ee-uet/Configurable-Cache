@@ -25,12 +25,13 @@ module cache_memory #(
     output logic hit,
     output logic [WORD_SIZE-1:0] data_out,
     output logic dirty_bit
-);    typedef struct packed {
+);    typedef struct  {
         logic b1, b2, b3;
     } tree_bits;    
     typedef logic [BLOCK_SIZE + TAG_WIDTH + 2 - 1 : 0] cache_line_t;
     cache_line_t cache [NUM_SETS-1:0][3:0];
-    tree_bits plru [NUM_SETS-1:0];    typedef struct packed {
+    tree_bits plru [NUM_SETS-1:0];    
+    typedef struct  {
         logic valid;
         logic dirty;
         logic [TAG_WIDTH-1:0] tag;
@@ -55,7 +56,9 @@ module cache_memory #(
         info3.tag   = cache[index][3][TAG_WIDTH+1:2];
         info3.block = cache[index][3][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2];
         info3.hit   = info3.valid && (tag == info3.tag);
-    end    assign hit = info0.hit || info1.hit || info2.hit || info3.hit;    function int get_lru_line(tree_bits t);
+    end    
+    assign hit = info0.hit || info1.hit || info2.hit || info3.hit;    
+    function int get_lru_line(tree_bits t);
         if (t.b1 == 0) begin
             if (t.b2 == 0) return 0;
             else           return 1;
@@ -108,7 +111,7 @@ module cache_memory #(
                         cache[index][0][TAG_WIDTH+1:2] <= tag;
                         cache[index][0][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
                         update_tree_on_access(plru[index], 0);
-                    end else if (read_en_cache && write_en_mem) begin
+                    end else if (read_en_cache && write_en_mem) begin //dirtybit is 1
                         dirty_block_out <= info0.block;
                         cache[index][0][1] <= 0;
                     end
@@ -137,20 +140,8 @@ module cache_memory #(
                         cache[index][3][1] <= 0;
                         cache[index][3][TAG_WIDTH+1:2] <= tag;
                         cache[index][3][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
-                        update_tree_on_access(plru[index], 3);module cache_decoder(clk, address, tag, index, blk_offset);
-    input logic clk;
-    input logic [31:0] address;
-    output logic [23:0] tag;
-    output logic [5:0] index;
-    output logic [1:0] blk_offset;
-    
-    
-    assign tag = address[31:8];
-    assign index = address[7:2];
-    assign blk_offset = address[1:0];
-    
-endmodule
-                    end else if (read_en_cache && write_en_mem) begin
+                        update_tree_on_access(plru[index], 3);
+                        end else if (read_en_cache && write_en_mem) begin
                         dirty_block_out <= info3.block;
                         cache[index][3][1] <= 0;
                     end
