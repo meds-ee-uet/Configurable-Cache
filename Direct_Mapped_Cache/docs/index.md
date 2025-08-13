@@ -106,11 +106,11 @@ Our first implementation is a direct-mapped cache with the following configurati
 | Total Bits/Line     | 154 bits               |  
 
 ## **TOP LEVEL DIAGRAM**:
+
 <div align="center">
-
-![](TOP_BLOCK_LEVEL/CACHE_TOPLEVEL_2.png)
-
+  <img src="TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png" width="600" height="400">
 </div>
+
 
 ## **Inputs:**
 - `req_type`: Whether you want to read (`req_type = 0`) or write.
