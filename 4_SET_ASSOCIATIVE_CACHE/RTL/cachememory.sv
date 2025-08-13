@@ -66,14 +66,16 @@ module cache_memory #(
             if (t.b3 == 0) return 2;
             else           return 3;
         end
-    endfunction    task update_tree_on_access(inout tree_bits t, input int line);
+    endfunction    
+    task update_tree_on_access(inout tree_bits t, input int line);
         case (line)
             0: begin t.b1 = 1; t.b2 = 1; end
             1: begin t.b1 = 1; t.b2 = 0; end
             2: begin t.b1 = 0; t.b3 = 1; end
             3: begin t.b1 = 0; t.b3 = 0; end
         endcase
-    endtask    always_ff @(posedge clk) begin
+    endtask    
+    always_ff @(posedge clk) begin
         data_out <= '0;
         dirty_block_out <= '0;        
         if (!hit) begin //MISS
