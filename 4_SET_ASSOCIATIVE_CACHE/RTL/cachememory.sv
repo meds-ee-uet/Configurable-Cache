@@ -70,8 +70,10 @@ module cache_memory #(
         endcase
     endtask    always_ff @(posedge clk) begin
         data_out <= '0;
-        dirty_block_out <= '0;        if (!hit) begin
-            int lru = get_lru_line(plru[index]);            if (!info0.valid && read_en_mem && write_en_cache) begin
+        dirty_block_out <= '0;        
+        if (!hit) begin //MISS
+            int lru = get_lru_line(plru[index]);            
+            if (!info0.valid && read_en_mem && write_en_cache) begin //when cache is empty
                 cache[index][0][0] <= 1;
                 cache[index][0][1] <= 0;
                 cache[index][0][TAG_WIDTH+1:2] <= tag;
@@ -96,9 +98,9 @@ module cache_memory #(
                 cache[index][3][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
                 update_tree_on_access(plru[index], 3);
             end
-            else if (read_en_mem && write_en_cache) begin
+            else if (read_en_mem && write_en_cache) begin // MISS WHEN CACHE IS NOT EMPTY 
                 case (lru)
-                    0: if (!info0.dirty) begin
+                    0: if (!info0.dirty) begin //DIRTY BIT IS ZERO
                         cache[index][0][0] <= 1;
                         cache[index][0][1] <= 0;
                         cache[index][0][TAG_WIDTH+1:2] <= tag;
