@@ -564,6 +564,43 @@ The testbench runs a comprehensive set of operations designed to test key cache 
 ## Expected Output
 
 ---
+# 2-Way Set-Associative Cache
+
+### Overview
+
+A **2-Way Set-Associative Cache** is a type of cache memory organization that strikes a balance between the simplicity of direct-mapped caches and the flexibility of fully associative caches. In this configuration, the cache is divided into multiple sets, each containing two cache lines. A memory block can be placed in either of the two lines within a set, allowing for more flexible data placement and reducing the likelihood of cache misses compared to direct-mapped caches.
+
+### Structure
+
+- **Cache Division**: The cache is divided into several sets, each containing two cache lines.
+- **Address Breakdown**: A memory address is divided into three parts:
+  - **Tag**: Identifies the specific block in memory.
+  - **Set Index**: Determines which set the data might reside in.
+  - **Block Offset**: Specifies the exact location within the cache line.
+
+### Operation
+
+When a memory request is made:
+
+1. The **Set Index** part of the address is used to select a set.
+2. Both cache lines within the selected set are checked for a match using the **Tag**.
+3. If either line contains the requested data, it's a cache hit; otherwise, it's a miss, and the data is fetched from main memory.
+
+### Comparison with Direct-Mapped Cache
+
+| Feature               | Direct-Mapped Cache           | 2-Way Set-Associative Cache     |
+|-----------------------|-------------------------------|---------------------------------|
+| Cache Lines per Set    | 1                             | 2                               |
+| Placement Flexibility  | Low (fixed mapping)           | Moderate (2 choices per set)    |
+| Conflict Misses        | Higher                        | Lower                           |
+| Hardware Complexity    | Simpler                       | More complex                    |
+| Performance            | May degrade with certain access patterns | Better for a wider range of patterns |
+
+### Benefits Over Direct-Mapped Cache
+
+- **Reduced Conflict Misses**: By allowing two possible locations for each block, the likelihood of conflicts is decreased, leading to a higher cache hit rate.
+- **Improved Performance**: Especially beneficial for workloads with access patterns that might cause frequent conflicts in a direct-mapped cache.
+- **Balanced Complexity**: Offers a compromise between the simplicity of direct-mapped caches and the complexity of fully associative caches.
 
 
 
