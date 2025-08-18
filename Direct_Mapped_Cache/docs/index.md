@@ -398,6 +398,14 @@ Each test case triggers different controller states and prints internal FSM stat
 ---
 
 ##  Expected Output
+### Read Hit:
+
+
+<div align="center">
+<img src="outputs/readhit.png" alt="Alt text" width="400"/>
+</div>
+
+
 
 At the end of the simulation, this message confirms success:
 ---
