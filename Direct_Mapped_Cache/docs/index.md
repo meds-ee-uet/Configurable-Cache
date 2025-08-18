@@ -605,6 +605,48 @@ When a memory request is made:
 
 
 
+# 4-Way Set-Associative Cache
+
+### Overview
+
+A **4-Way Set-Associative Cache** is a cache memory organization where each set contains four cache lines. Compared to a 2-way set-associative cache, it provides even more placement flexibility, further reducing conflict misses and improving cache hit rates for workloads with frequent memory reuse.
+
+### Structure
+
+- **Cache Division**: The cache is divided into multiple sets, each containing four cache lines.
+- **Address Breakdown**: A memory address is divided into three parts:
+  - **Tag**: Identifies the specific block in memory.
+  - **Set Index**: Determines which set the data might reside in.
+  - **Block Offset**: Specifies the exact location within the cache line.
+
+### Operation
+
+When a memory request is made:
+
+1. The **Set Index** part of the address is used to select a set.
+2. All four cache lines within the selected set are checked for a match using the **Tag**.
+3. If any line contains the requested data, it is a cache hit; otherwise, it is a miss, and the data is fetched from main memory.
+
+### Comparison with 2-Way Set-Associative Cache
+
+| Feature               | 2-Way Set-Associative Cache | 4-Way Set-Associative Cache |
+|-----------------------|-----------------------------|-----------------------------|
+| Cache Lines per Set    | 2                           | 4                           |
+| Placement Flexibility  | Moderate (2 choices per set)| Higher (4 choices per set) |
+| Conflict Misses        | Low                         | Lower                       |
+| Hardware Complexity    | Moderate                    | Higher                      |
+| Performance            | Good for many access patterns| Better for high-conflict access patterns |
+
+### Benefits Over 2-Way Set-Associative Cache
+
+- **Further Reduced Conflict Misses**: More options for placing memory blocks within a set reduces the chance of cache conflicts.
+- **Improved Cache Hit Rate**: Especially beneficial for programs with repeated accesses to multiple memory addresses that map to the same set.
+- **Better Performance for Complex Workloads**: Handles high-frequency accesses more efficiently without dramatically increasing the cache size.
+
+
+
+
+
 
 
 
