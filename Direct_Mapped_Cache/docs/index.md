@@ -133,7 +133,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ## **DataPath**
 <div align="center">
-  <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER%20(1).png" width="600" height="400">
+  <img src="TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.png" width="600" height="400">
 </div>
 
 
@@ -160,7 +160,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ### 1️⃣ `cache_decoder`
 <div align="center">
-  <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/module_level/cache_decoder.png" width="600" height="400">
+  <img src="module_level/cache_decoder.png" width="600" height="400">
 </div>
 
 
@@ -182,7 +182,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ### 2️⃣ `cache_controller`
 div align="center">
-  <img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/module_level/CACHE_CONTROLLER%20(1).png" width="600" height="400">
+  <img src="module_level/CACHE_CONTROLLER.png" width="600" height="400">
 </div>
 
 
@@ -237,7 +237,7 @@ div align="center">
 
 ### 3️⃣ `cache_memory`
 <div align="center">
-<img src="https://github.com/meds-uet/Configurable_cache/blob/main/Direct_Mapped_Cache/docs/module_level/CACHE_MEMORY.png" alt="Alt text" width="400"/>
+<img src="module_level/CACHE_MEMORY.png" alt="Alt text" width="400"/>
 </div>
 
 
