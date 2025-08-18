@@ -112,6 +112,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 </div>
 
 
+
 ## **Inputs:**
 - `req_type`: Whether you want to read (`req_type = 0`) or write.
 - `req_valid`: Tells the cache there is a request.
@@ -387,17 +388,10 @@ Each test case triggers different controller states and prints internal FSM stat
 
 ---
 
-##  Features of the Testbench
 
-- **Reusable Tasks:** Each test is wrapped in a `task` for clean and modular design.
-- **Clock Generation:** 10ns clock with toggling every 5ns.
-- **State Name Decoder:** Converts FSM numeric states to human-readable strings for debugging.
-- **Unified Output Printer:** `print_state` task provides snapshot of controller behavior at every clock cycle.
-- **VCD Dumping:** Waveform file (`all_cases.vcd`) generated for GTKWave or similar tools.
-
----
 
 ##  Expected Output
+
 ### Read Hit:
 
 
@@ -405,9 +399,54 @@ Each test case triggers different controller states and prints internal FSM stat
 <img src="outputs/readhit.png" alt="Alt text" width="400"/>
 </div>
 
+### Write hit:
+
+<div align="center">
+<img src="outputs/writehit.png" alt="Alt text" width="400"/>
+</div>
 
 
-At the end of the simulation, this message confirms success:
+### Read Miss Clean:
+
+<div align="center">
+<img src="outputs/readmissclean.png" alt="Alt text" width="400"/>
+</div>
+
+### Read Miss Dirty:
+
+<div align="center">
+<img src="outputs/readmissdirty.png" alt="Alt text" width="400"/>
+</div>
+
+### Write Miss CLean:
+
+<div align="center">
+<img src="outputs/readmissdirty.png" alt="Alt text" width="400"/>
+</div>
+
+### Write Miss Dirty:
+
+<div align="center">
+<img src="outputs/readhit.png" alt="Alt text" width="400"/>
+</div>
+
+### Snippet of Waves from Simulation:
+
+<div align="center">
+<img src="outputs/readhit.png" alt="Alt text" width="400"/>
+</div>
+
+
+
+
+
+ 
+
+
+
+
+
+
 ---
 #  Testbench: `cache_tb`
 
