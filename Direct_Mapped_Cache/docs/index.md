@@ -421,19 +421,19 @@ Each test case triggers different controller states and prints internal FSM stat
 ### Write Miss CLean:
 
 <div align="center">
-<img src="outputs/readmissdirty.png" alt="Alt text" width="400"/>
+<img src="outputs/writemissclean.png" alt="Alt text" width="400"/>
 </div>
 
 ### Write Miss Dirty:
 
 <div align="center">
-<img src="outputs/readhit.png" alt="Alt text" width="400"/>
+<img src="outputs/writemissdirty.png" alt="Alt text" width="400"/>
 </div>
 
 ### Snippet of Waves from Simulation:
 
 <div align="center">
-<img src="outputs/readhit.png" alt="Alt text" width="400"/>
+<img src="outputs/waveforcontroller.png" alt="Alt text" width="400"/>
 </div>
 
 
