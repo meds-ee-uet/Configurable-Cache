@@ -239,7 +239,7 @@ end
     // update PLRU for this set
     plru[set] = update_plru(plru[set], hit_way);
 end
-
+```
 - **On a Miss**  
 ```systemverilog 
   if (miss) begin
@@ -264,7 +264,7 @@ end
     plru[set] = update_plru(plru[set], victim_way);
 end
   
-
+```
 ---
 
 #### ***Why PLRU is Efficient Here***
