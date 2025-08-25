@@ -952,7 +952,7 @@ It systematically simulates read and write operations across multiple ways of a 
 
 # 4-Way Set-Associative Cache
 
-### Overview
+## 1. Overview
 
 A **4-Way Set-Associative Cache** is a cache memory organization where each set contains four cache lines. Compared to a 2-way set-associative cache, it provides even more placement flexibility, further reducing conflict misses and improving cache hit rates for workloads with frequent memory reuse.
 
