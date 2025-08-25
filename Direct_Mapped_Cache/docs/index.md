@@ -576,6 +576,9 @@ The testbench runs a comprehensive set of operations designed to test key cache 
 <img src="outputs/writemiss.png" alt="Alt text" width="400"/>
 </div>
 
+## Testing of integrated RTL modules:
+[modular_integration](https://github.com/ee-uet/configurable-cache/tree/main/Direct_Mapped_Cache/modular_integration)
+
 ---
 # 2-Way Set-Associative Cache
 
