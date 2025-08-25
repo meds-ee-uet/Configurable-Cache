@@ -567,6 +567,15 @@ The testbench runs a comprehensive set of operations designed to test key cache 
 
 ## Expected Output
 
+ <div align="center">
+<img src="outputs/READMISS.png" alt="Alt text" width="400"/>
+</div>
+
+
+<div align="center">
+<img src="outputs/writemiss.png" alt="Alt text" width="400"/>
+</div>
+
 ---
 # 2-Way Set-Associative Cache
 
