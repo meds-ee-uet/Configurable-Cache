@@ -1401,6 +1401,15 @@ It systematically simulates read and write operations across multiple ways of a 
 - **Waveform-Friendly**: Clear signal transitions for debugging  
 
 
+# Synthesization of RTL:
+we synthesized RTL on Vivado to check its compatibility with hardware implementation by analyzing the utilization report.
+[synthesis_vivado](https://github.com/ee-uet/configurable-cache/tree/388368cb34323a59cb31c21528f4e31c361c0388/synthesis_vivado)
+
+
+
+
+
+
 
 
 
