@@ -567,7 +567,7 @@ The testbench runs a comprehensive set of operations designed to test key cache 
 ---
 # 2-Way Set-Associative Cache
 
-### Overview
+## 1.Overview
 
 A **2-Way Set-Associative Cache** is a type of cache memory organization that strikes a balance between the simplicity of direct-mapped caches and the flexibility of fully associative caches. In this configuration, the cache is divided into multiple sets, each containing two cache lines. A memory block can be placed in either of the two lines within a set, allowing for more flexible data placement and reducing the likelihood of cache misses compared to direct-mapped caches.
 
