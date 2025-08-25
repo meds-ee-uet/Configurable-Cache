@@ -955,7 +955,12 @@ It systematically simulates read and write operations across multiple ways of a 
 - **Preloaded Cache Content**: Controlled initialization for targeted tests  
 - **Cycle-by-Cycle Verification**: Uses `@(posedge clk)` for stepwise operations  
 - **Readable Logs**: Shows hit/miss, dirty bit, PLRU victim, and cache state  
-- **Waveform-Friendly**: Clear signal transitions for debugging  
+- **Waveform-Friendly**: Clear signal transitions for debugging
+
+
+
+## Testing of integrated RTL modules:
+[modular_integration](https://github.com/ee-uet/configurable-cache/tree/main/2-WAY%20SET_ASSOCIATIVE%20CACHE/modular_integration)
 
 
 
