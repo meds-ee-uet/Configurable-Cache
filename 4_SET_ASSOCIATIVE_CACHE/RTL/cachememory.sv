@@ -85,12 +85,14 @@ typedef struct {
             3: begin plru_next[2] = 0; plru_next[0] = 0; end // b1=0, b3=0
         endcase
     end
+   // ---------------- Main cache control ----------------
     always_ff @(posedge clk) begin
         data_out <= '0;
-        dirty_block_out <= '0;        
-        if (!hit) begin //MISS
-                     
-            if (!info0.valid && read_en_mem && write_en_cache) begin //when cache is empty
+        dirty_block_out<= '0;
+        accessed_line <= 'x; // default, will be set on access
+
+        if (!hit) begin // MISS
+            if (!info0.valid && read_en_mem && write_en_cache) begin
                 cache[index][0][0] <= 1;
                 cache[index][0][1] <= 0;
                 cache[index][0][TAG_WIDTH+1:2] <= tag;
@@ -114,57 +116,73 @@ typedef struct {
                 cache[index][3][TAG_WIDTH+1:2] <= tag;
                 cache[index][3][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
                 accessed_line <= 3;
-            end
-            else if (read_en_mem && write_en_cache) begin // MISS WHEN CACHE IS NOT EMPTY 
+            
+        end else if (read_en_cache && write_en_mem) begin
+           case (lru_line)
+             0: if (info0.dirty) begin
+                 dirty_block_out <= info0.block;
+                        cache[index][0][1] <= 0;
+                         accessed_line <= 0;
+
+                end
+              1: if (info1.dirty) begin
+                dirty_block_out <= info1.block;
+                        cache[index][1][1] <= 0;
+                        accessed_line <= 1;
+
+                    end
+               2: if (info2.dirty) begin
+                  dirty_block_out <= info2.block;
+                        cache[index][2][1] <= 0;
+                        accessed_line <= 2;
+
+                    end
+               3: if (info3.dirty) begin
+                  dirty_block_out <= info3.block;
+                        cache[index][3][1] <= 0;
+                        accessed_line <= 3;
+                    end
+                endcase
+            
+        end else if (read_en_mem && write_en_cache) begin // MISS, cache full
                 case (lru_line)
-                    0: if (!info0.dirty) begin //DIRTY BIT IS ZERO
+                    0: if (!info0.dirty) begin
                         cache[index][0][0] <= 1;
                         cache[index][0][1] <= 0;
                         cache[index][0][TAG_WIDTH+1:2] <= tag;
                         cache[index][0][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
                         accessed_line <= 0;
-                    end else if (read_en_cache && write_en_mem) begin //dirtybit is 1
-                        dirty_block_out <= info0.block;
-                        cache[index][0][1] <= 0;
-                    end
+                    end 
                     1: if (!info1.dirty) begin
                         cache[index][1][0] <= 1;
                         cache[index][1][1] <= 0;
                         cache[index][1][TAG_WIDTH+1:2] <= tag;
                         cache[index][1][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
                         accessed_line <= 1;
-                    end else if (read_en_cache && write_en_mem) begin
-                        dirty_block_out <= info1.block;
-                        cache[index][1][1] <= 0;
-                    end
+                    end 
                     2: if (!info2.dirty) begin
                         cache[index][2][0] <= 1;
                         cache[index][2][1] <= 0;
                         cache[index][2][TAG_WIDTH+1:2] <= tag;
                         cache[index][2][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
                         accessed_line <= 2;
-                    end else if (read_en_cache && write_en_mem) begin
-                        dirty_block_out <= info2.block;
-                        cache[index][2][1] <= 0;
-                    end
+                    end 
+                    
                     3: if (!info3.dirty) begin
                         cache[index][3][0] <= 1;
                         cache[index][3][1] <= 0;
                         cache[index][3][TAG_WIDTH+1:2] <= tag;
                         cache[index][3][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
                         accessed_line <= 3;
-                        end else if (read_en_cache && write_en_mem) begin
-                        dirty_block_out <= info3.block;
-                        cache[index][3][1] <= 0;
-                    end
+                    end 
                 endcase
-            end
-        end else begin
+            end  
+        end else begin // HIT
             if (req_type && write_en_cache) begin // Write on hit
                 if (info0.hit) begin
                     cache[index][0][TAG_WIDTH + 2 + blk_offset * WORD_SIZE +: WORD_SIZE] <= data_in;
                     cache[index][0][1] <= 1;
-                   accessed_line <= 0;
+                    accessed_line <= 0;
                 end else if (info1.hit) begin
                     cache[index][1][TAG_WIDTH + 2 + blk_offset * WORD_SIZE +: WORD_SIZE] <= data_in;
                     cache[index][1][1] <= 1;
@@ -176,12 +194,12 @@ typedef struct {
                 end else if (info3.hit) begin
                     cache[index][3][TAG_WIDTH + 2 + blk_offset * WORD_SIZE +: WORD_SIZE] <= data_in;
                     cache[index][3][1] <= 1;
-                     accessed_line <= 3;
+                    accessed_line <= 3;
                 end
             end else if (!req_type && read_en_cache) begin // Read on hit
                 if (info0.hit) begin
                     data_out <= info0.block[blk_offset*WORD_SIZE +: WORD_SIZE];
-                     accessed_line <= 0;
+                    accessed_line <= 0;
                 end else if (info1.hit) begin
                     data_out <= info1.block[blk_offset*WORD_SIZE +: WORD_SIZE];
                     accessed_line <= 1;
@@ -194,11 +212,14 @@ typedef struct {
                 end
             end
         end
+
+        // finally update PLRU bits for this set
         if (accessed_line !== 'x) begin
             plru[index].b1 <= plru_next[2];
             plru[index].b2 <= plru_next[1];
             plru[index].b3 <= plru_next[0];
         end
     end
-    
+
 endmodule
+	
