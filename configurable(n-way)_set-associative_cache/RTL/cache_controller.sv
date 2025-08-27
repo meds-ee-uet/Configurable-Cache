@@ -18,7 +18,6 @@ module cache_controller (
 
     output logic read_en_mem,    // Enable read from main memory
     output logic write_en_mem,   // Enable write to main memory
-    output logic write_en,       // General write enable
     output logic read_en_cache,  // Enable read from cache
     output logic write_en_cache, // Enable write to cache memory
     output logic refill,         // Signal indicating cache block has been refilled from memory
