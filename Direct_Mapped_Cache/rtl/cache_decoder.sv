@@ -1,3 +1,22 @@
+// ============================================================================
+// Module: cache_decoder
+// Description: 
+//   This module decodes a 32-bit memory address into three parts required
+//   by a cache memory system: tag, index, and block offset.
+// 
+//   Address breakdown (32 bits):
+//   -------------------------------------------------------------
+//   |       TAG (24 bits)      |  INDEX (6 bits)  | OFFSET (2 bits) |
+//   -------------------------------------------------------------
+//   [31......................8][7..............2][1..............0]
+// 
+// Ports:
+//   - clk       : Clock input (not used here, but included for synchronization)
+//   - address   : 32-bit memory address to be decoded
+//   - tag       : Extracted upper 24 bits of the address
+//   - index     : Middle 6 bits, used to select cache set
+//   - blk_offset: Lower 2 bits, used to select word within a cache block
+// ============================================================================
 module cache_decoder(clk, address, tag, index, blk_offset);
     input logic clk;
     input logic [31:0] address;
@@ -10,4 +29,5 @@ module cache_decoder(clk, address, tag, index, blk_offset);
     assign index = address[7:2];
     assign blk_offset = address[1:0];
     
+
 endmodule
