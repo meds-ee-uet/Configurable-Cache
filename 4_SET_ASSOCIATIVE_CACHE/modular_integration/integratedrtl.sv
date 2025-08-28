@@ -1,45 +1,45 @@
 module top #(
     // General Cache Parameters
-    parameter int WORD_SIZE = 32, // bits per word
-    parameter int WORDS_PER_BLOCK = 4, // words per block
-    parameter int BLOCK_SIZE = WORDS_PER_BLOCK * WORD_SIZE,
-    parameter int NUM_BLOCKS = 64, // total blocks
-    parameter int NUM_WAYS = 4,
-    parameter int NUM_SETS = NUM_BLOCKS / NUM_WAYS, // 32 sets
-    parameter int CACHE_SIZE = NUM_BLOCKS * BLOCK_SIZE / 8, // in bytes
-    parameter int TAG_WIDTH = 26,
-    parameter int INDEX_WIDTH = $clog2(NUM_SETS), // indexing by set
-    parameter int OFFSET_WIDTH = $clog2(WORDS_PER_BLOCK)
+    parameter int WORD_SIZE         = 32, // bits per word
+    parameter int WORDS_PER_BLOCK   = 4,  // words per block
+    parameter int BLOCK_SIZE        = WORDS_PER_BLOCK * WORD_SIZE,
+    parameter int NUM_BLOCKS        = 64, // total blocks
+    parameter int NUM_WAYS          = 4,
+    parameter int NUM_SETS          = NUM_BLOCKS / NUM_WAYS, // 32 sets
+    parameter int CACHE_SIZE        = NUM_BLOCKS * BLOCK_SIZE / 8, // in bytes
+    parameter int TAG_WIDTH         = 26,
+    parameter int INDEX_WIDTH       = $clog2(NUM_SETS), // indexing by set
+    parameter int OFFSET_WIDTH      = $clog2(WORDS_PER_BLOCK)
 )(
-    input logic clk,
-    input logic rst,
+    input  logic clk,
+    input  logic rst,
 
     // From CPU
-    input logic req_valid,
-    input logic req_type, // 0 = Read, 1 = Write
-    input logic [WORD_SIZE-1:0] data_in,
-    input logic [31:0] address, // Could be split into tag/index/offset if decoder is used
+    input  logic        req_valid,
+    input  logic        req_type,        // 0 = Read, 1 = Write
+    input  logic [WORD_SIZE-1:0] data_in,
+    input  logic [31:0] address, // Could be split into tag/index/offset if decoder is used
     input logic [BLOCK_SIZE-1:0] data_out_mem,
     input logic valid_mem,
     input logic ready_mem,
   // To CPU
     output logic [WORD_SIZE-1:0] data_out,
-    output logic done_cache
+    output logic                 done_cache
 );
 
     // Decoder outputs
-    logic [TAG_WIDTH-1:0] tag;
+    logic [TAG_WIDTH-1:0]   tag;
     logic [INDEX_WIDTH-1:0] index;
     logic [OFFSET_WIDTH-1:0] blk_offset;
 
     // Cache <-> Controller signals
-    logic read_en_cache, write_en_cache;
+    logic  read_en_cache, write_en_cache;
     logic [BLOCK_SIZE-1:0] dirty_block_out;
     logic dirty_bit, hit;
 
     // Memory signals
     logic read_en_mem, write_en_mem;
-    logic [BLOCK_SIZE-1:0] dirty_block_in;
+    logic [BLOCK_SIZE-1:0]  dirty_block_in;
     
 
     // Instantiate Cache Controller
@@ -62,22 +62,22 @@ module top #(
         .valid_mem(valid_mem),
 
         // Cache handshake
-        .valid_cache(), // Not connected yet
-        .ready_cache(), // Not connected yet
+        .valid_cache(),   // Not connected yet
+        .ready_cache(),   // Not connected yet
 
         .read_en_mem(read_en_mem),
         .write_en_mem(write_en_mem),
-        .write_en(), // Not connected
+        .write_en(),      // Not connected
         .read_en_cache(read_en_cache),
         .write_en_cache(write_en_cache),
-        .refill(), // Not connected
+        .refill(),        // Not connected
         .done_cache(done_cache)
     );
     cache_decoder u_decoder (
-        .clk (clk),
-        .address (address),
-        .tag (tag),
-        .index (index),
+        .clk        (clk),
+        .address    (address),
+        .tag        (tag),
+        .index      (index),
         .blk_offset (blk_offset)
     );
 
@@ -127,22 +127,22 @@ module cache_decoder(clk, address, tag, index, blk_offset);
     
 endmodule
 module cache_controller #(
-    parameter int WORD_SIZE = 32,
-    parameter int BLOCK_SIZE = 128,
-    parameter int TAG_WIDTH = 26,
+    parameter int WORD_SIZE   = 32,
+    parameter int BLOCK_SIZE  = 128,
+    parameter int TAG_WIDTH   = 26,
     parameter int INDEX_WIDTH = 6,
     parameter int OFFSET_WIDTH = 2
 )(
-    input logic clk,
-    input logic rst,
-    input logic req_valid,
-    input logic req_type,
-    input logic hit,
-    input logic dirty_bit,
+    input  logic clk,
+    input  logic rst,
+    input  logic req_valid,
+    input  logic req_type,
+    input  logic hit,
+    input  logic dirty_bit,
 
     // Memory handshake
-    input logic ready_mem,
-    input logic valid_mem,
+    input  logic ready_mem,
+    input  logic valid_mem,
 
     // Cache handshake
     output logic valid_cache,
@@ -162,236 +162,7 @@ module cache_controller #(
         COMPARE,
         WRITE_BACK,
         WRITE_ALLOCATE,
-        REFILL_DONE`timescale 1ns/1ps
-module tb_cache_top_4way;
-
-  // Parameters
-  localparam WORD_SIZE       = 32;
-  localparam WORDS_PER_BLOCK = 4;
-  localparam BLOCK_SIZE      = WORDS_PER_BLOCK * WORD_SIZE; // 128b
-  localparam NUM_BLOCKS      = 64;
-  localparam NUM_WAYS        = 4;
-  localparam NUM_SETS        = NUM_BLOCKS / NUM_WAYS;
-  localparam TAG_WIDTH       = 26;
-  localparam INDEX_WIDTH     = 4;
-  localparam OFFSET_WIDTH    = 2;
-
-  // Clock/reset
-  logic clk;
-  logic rst;
-
-  // CPU interface
-  logic req_valid;
-  logic req_type; // 0=read, 1=write
-  logic [31:0] address;
-  logic [31:0] data_in;
-  logic [31:0] data_out;
-  logic done_cache;
-
-  // Memory side
-  logic [127:0] data_out_mem;
-  logic ready_mem;
-  logic valid_mem;
- 
-
-  // DUT instantiation
-  top dut (
-    .clk(clk),
-    .rst(rst),
-    .req_valid(req_valid),
-    .req_type(req_type),
-    .address(address),
-    .data_in(data_in),
-    .data_out(data_out),
-   
-    .done_cache(done_cache),
-    .data_out_mem(data_out_mem),
-    .ready_mem(ready_mem),
-    .valid_mem(valid_mem)
-  );
-
-  // Clock generation
-  always #5 clk = ~clk;
-
-  // Reset + preload cache
-  initial begin
-    clk = 0;
-    rst = 1;
-    req_valid = 0;
-    req_type = 0;
-    data_in = 0;
-    address = 0;
-    data_out_mem = 0;
-    ready_mem = 0;
-    valid_mem = 0;
-    #15;
-    rst = 0;
-
-    // ----------------- Preload cache line for hits -----------------
-    // Put block at set index=2, way=0 with tag=0x1AAAA
-    dut.cache.cache[4'd2][0] = {
-        128'h11112222_33334444_55556666_77778888, // block data
-        26'h1AAAA,                               // TAG
-        1'b1,                                    // dirty=0
-        1'b1                                     // valid=1
-    };
-
-    // preload some other lines
-    dut.cache.cache[0][0] = {
-        128'hDEADBEEF_55667788_11223344_AABBCCDD,
-        26'h1ABCDE,
-        1'b1,
-        1'b1
-    };
-    dut.cache.cache[0][1] = {
-        128'hDAADBEEF_65667788_31223344_BABBCDDD,
-        26'h1CBBDE,
-        1'b0,
-        1'b1
-    };
-    dut.cache.cache[0][2] = {
-        128'hDAADBEEF_65667788_31223344_BABBCDDD,
-        26'h1BBBDE,
-        1'b0,
-        1'b1
-    };
-    dut.cache.cache[0][3] = {
-        128'hDAADBEEF_65667788_41223344_BABBCDDD,
-        26'h1DBBDE,
-        1'b0,
-        1'b1
-    };
-
-    $display("Preloaded cache line: TAG=0x1AAAA at index=2 (way0)");
-  end
-
-  // Stimulus
-  initial begin
-   
-
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1ABCDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-   
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1CBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-   
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1BBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-   
-   
-   
-     $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1DBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-    @(posedge clk);
-    address = {26'h1FBCEE, 4'h0, 2'h3};
-      req_type = 0;
-      req_valid=1;
-      rst=0;
-       @(posedge clk);
-      valid_mem=1;
-      ready_mem=1;
-      req_valid=0;
-      data_out_mem=128'hFAAABEEF_55667788_11223344_AABBCCDD;
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("read_en_mem: %0b", dut.cache.read_en_mem);
-      $display("write_en_cache: %0b", dut.cache.write_en_cache);
-     
-        $display("Dirty bit: %b", dut.cache.info1.dirty);
-        $display("Valid bit: %b", dut.cache.info1.valid);
-      $display("Next:",dut.controller.next_state);
-     $display("BEFORE WRITE cache line: %h",
-              dut.cache.cache[0][0][155:28]);
-       @(posedge clk);
-    $display("Current:",dut.controller.current_state);
-    $display("Next:",dut.controller.next_state);
-      $display("read_en_mem: %0b", dut.cache.read_en_mem);
-    $display("ready_cache: %0b", dut.controller.ready_cache);
-    ready_mem=1;
-    @(posedge clk);
-      $display("write_en_cache: %0b", dut.cache.write_en_cache);
-      ready_mem=1;
-    $display("Valid_cache : %b",dut.controller.valid_cache);
-      $display("ready_mem: %b",dut.controller.ready_mem);
-      $display("Write_en_mem %b: ",dut.cache.write_en_mem);
-      $display("read_en_cache : %b",dut.cache.read_en_cache);
-      $display("Dirty block out : %h",dut.cache.dirty_block_out);
-   
-       @(posedge clk);
-    $display("Current:",dut.controller.current_state);
-    $display("Next:",dut.controller.next_state);
-        $display("[%0t] AFTER WRITE cache line: %h",
-                  $time,
-                 dut.cache.cache[0][0][155:28]);
-    $display("PLRU: %b", dut.cache.plru[0].b1);
-    $display("PLRU: %b", dut.cache.plru[0].b2);
-    $display("PLRU: %b", dut.cache.plru[0].b3);
-      $display("Refill: %h", dut.controller.refill);
-      $display("Read_en_cache: %b", dut.controller.read_en_cache);
-      $display("DATA_OUT: %h", data_out);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-     
-      valid_mem=1;              
-      req_valid=0;
-     
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      $display("Refill: %h", dut.controller.refill);
-      $display("Read_en_cache: %b", dut.controller.read_en_cache);
-      $display("DATA_OUT: %h", data_out);
-     
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      $display("----------------------------END-------------------------");
-   $finish;
- 
-  end
-endmodule
-	
-
+        REFILL_DONE
     } state_t;
 
     state_t current_state, next_state;
@@ -409,7 +180,7 @@ endmodule
         next_state = current_state;
         case (current_state)
             IDLE:
-                if (req_valid)
+                if     (req_valid)
                     next_state = COMPARE;
 
             COMPARE: begin
@@ -440,16 +211,16 @@ endmodule
     // Output logic (Ready-Valid Handshake Semantics)
     always_comb begin
         // Defaults
-        read_en_mem = 0;
-        write_en_mem = 0;
-        write_en = 0;
-        read_en_cache = 0;
-        write_en_cache = 0;
-        refill = 0;
-        done_cache = 0;
+        read_en_mem      = 0;
+        write_en_mem     = 0;
+        write_en         = 0;
+        read_en_cache    = 0;
+        write_en_cache   = 0;
+        refill           = 0;
+        done_cache       = 0;
 
-        valid_cache = 0; 
-        ready_cache = 1; // default: cache is idle, so ready to receive
+        valid_cache      = 0; 
+        ready_cache      = 1; // default: cache is idle, so ready to receive
 
         case (current_state)
             IDLE: begin
@@ -458,9 +229,9 @@ endmodule
 
             COMPARE: begin
                 if (hit) begin
-                    done_cache = 1;
+                    done_cache     = 1;
                     write_en_cache = req_type;
-                    read_en_cache = ~req_type;
+                    read_en_cache  = ~req_type;
                 end else if (!dirty_bit) begin
                     read_en_mem = 1; // Request block from memory
                 end else begin
@@ -480,8 +251,8 @@ endmodule
             end
 
             WRITE_ALLOCATE: begin
-                read_en_mem = 1; // Memory begins to send data
-                ready_cache = 1; // Cache ready to receive
+                read_en_mem  = 1;  // Memory begins to send data
+                ready_cache  = 1;  // Cache ready to receive
                
                  // IMPORTANT: During this phase, memory should be sending valid data,
                 // so memory must drive ready_mem = 0 (busy sending)
@@ -506,28 +277,28 @@ endmodule
 endmodule
 // Code your design here
 module cache_memory #(
-    parameter int WORD_SIZE = 32,
-    parameter int WORDS_PER_BLOCK = 4,
-    parameter int BLOCK_SIZE = WORDS_PER_BLOCK * WORD_SIZE,
-    parameter int NUM_BLOCKS = 64,
-    parameter int NUM_WAYS = 4,
-    parameter int NUM_SETS = NUM_BLOCKS / NUM_WAYS,
-    parameter int CACHE_SIZE = NUM_BLOCKS * BLOCK_SIZE / 8,
-    parameter int TAG_WIDTH = 26,
-    parameter int INDEX_WIDTH = $clog2(NUM_SETS),
-    parameter int OFFSET_WIDTH = $clog2(WORDS_PER_BLOCK)
+    parameter int WORD_SIZE         = 32,
+    parameter int WORDS_PER_BLOCK   = 4,
+    parameter int BLOCK_SIZE        = WORDS_PER_BLOCK * WORD_SIZE,
+    parameter int NUM_BLOCKS        = 64,
+    parameter int NUM_WAYS          = 4,
+    parameter int NUM_SETS          = NUM_BLOCKS / NUM_WAYS,
+    parameter int CACHE_SIZE        = NUM_BLOCKS * BLOCK_SIZE / 8,
+    parameter int TAG_WIDTH         = 26,
+    parameter int INDEX_WIDTH       = $clog2(NUM_SETS),
+    parameter int OFFSET_WIDTH      = $clog2(WORDS_PER_BLOCK)
 )(
-    input logic clk,
-    input logic [TAG_WIDTH-1:0] tag,
-    input logic [INDEX_WIDTH-1:0] index,
-    input logic [OFFSET_WIDTH-1:0] blk_offset,
-    input logic req_type, // 0=Read , 1=Write
-    input logic read_en_cache,
-    input logic write_en_cache,
-    input logic read_en_mem,
-    input logic write_en_mem,
-    input logic [BLOCK_SIZE-1:0] data_in_mem,
-    input logic [WORD_SIZE-1:0] data_in,
+    input  logic clk,
+    input  logic [TAG_WIDTH-1:0] tag,
+    input  logic [INDEX_WIDTH-1:0] index,
+    input  logic [OFFSET_WIDTH-1:0] blk_offset,
+    input  logic req_type,                // 0=Read , 1=Write
+    input  logic read_en_cache,
+    input  logic write_en_cache,
+    input  logic read_en_mem,
+    input  logic write_en_mem,
+    input  logic [BLOCK_SIZE-1:0] data_in_mem,
+    input  logic [WORD_SIZE-1:0] data_in,
     output logic [BLOCK_SIZE-1:0] dirty_block_out,
     output logic hit,
     output logic [WORD_SIZE-1:0] data_out,
@@ -545,7 +316,7 @@ module cache_memory #(
     cache_line_t cache [NUM_SETS-1:0][3:0];
     tree_bits plru [NUM_SETS-1:0];
 
-    typedef struct {
+    typedef struct  {
         logic valid;
         logic dirty;
         logic [TAG_WIDTH-1:0] tag;
@@ -559,27 +330,27 @@ module cache_memory #(
     always_comb begin
         info0.valid = cache[index][0][0];
         info0.dirty = cache[index][0][1];
-        info0.tag = cache[index][0][TAG_WIDTH+1:2];
+        info0.tag   = cache[index][0][TAG_WIDTH+1:2];
         info0.block = cache[index][0][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2];
-        info0.hit = info0.valid && (tag == info0.tag);
+        info0.hit   = info0.valid && (tag == info0.tag);
 
         info1.valid = cache[index][1][0];
         info1.dirty = cache[index][1][1];
-        info1.tag = cache[index][1][TAG_WIDTH+1:2];
+        info1.tag   = cache[index][1][TAG_WIDTH+1:2];
         info1.block = cache[index][1][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2];
-        info1.hit = info1.valid && (tag == info1.tag);
+        info1.hit   = info1.valid && (tag == info1.tag);
 
         info2.valid = cache[index][2][0];
         info2.dirty = cache[index][2][1];
-        info2.tag = cache[index][2][TAG_WIDTH+1:2];
+        info2.tag   = cache[index][2][TAG_WIDTH+1:2];
         info2.block = cache[index][2][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2];
-        info2.hit = info2.valid && (tag == info2.tag);
+        info2.hit   = info2.valid && (tag == info2.tag);
 
         info3.valid = cache[index][3][0];
         info3.dirty = cache[index][3][1];
-        info3.tag = cache[index][3][TAG_WIDTH+1:2];
+        info3.tag   = cache[index][3][TAG_WIDTH+1:2];
         info3.block = cache[index][3][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2];
-        info3.hit = info3.valid && (tag == info3.tag);
+        info3.hit   = info3.valid && (tag == info3.tag);
     end
 
     assign hit = info0.hit || info1.hit || info2.hit || info3.hit;
@@ -589,10 +360,10 @@ module cache_memory #(
     always_comb begin
         if (plru[index].b1 == 0) begin
             if (plru[index].b2 == 0) lru_line = 0;
-            else lru_line = 1;
+            else                     lru_line = 1;
         end else begin
             if (plru[index].b3 == 0) lru_line = 2;
-            else lru_line = 3;
+            else                     lru_line = 3;
         end
     end
 
@@ -614,7 +385,7 @@ module cache_memory #(
     // ---------------- Main cache control ----------------
     always_ff @(posedge clk) begin
         data_out <= '0;
-        dirty_block_out<= '0;
+        
         accessed_line <= 'x; // default, will be set on access
 
         if (!hit) begin // MISS
@@ -639,694 +410,7 @@ module cache_memory #(
             end else if (!info3.valid && read_en_mem && write_en_cache) begin
                 cache[index][3][0] <= 1;
                 cache[index][3][1] <= 0;
-                cache[index][3][TAG_WIDTH+1:2] <= tag;`timescale 1ns/1ps
-module tb_cache_top_4way;
-
-  // Parameters
-  localparam WORD_SIZE       = 32;
-  localparam WORDS_PER_BLOCK = 4;
-  localparam BLOCK_SIZE      = WORDS_PER_BLOCK * WORD_SIZE; // 128b
-  localparam NUM_BLOCKS      = 64;
-  localparam NUM_WAYS        = 4;
-  localparam NUM_SETS        = NUM_BLOCKS / NUM_WAYS;
-  localparam TAG_WIDTH       = 26;
-  localparam INDEX_WIDTH     = 4;
-  localparam OFFSET_WIDTH    = 2;
-
-  // Clock/reset
-  logic clk;
-  logic rst;
-
-  // CPU interface
-  logic req_valid;
-  logic req_type; // 0=read, 1=write
-  logic [31:0] address;
-  logic [31:0] data_in;
-  logic [31:0] data_out;
-  logic done_cache;
-
-  // Memory side
-  logic [127:0] data_out_mem;
-  logic ready_mem;
-  logic valid_mem;
- 
-
-  // DUT instantiation
-  top dut (
-    .clk(clk),
-    .rst(rst),`timescale 1ns/1ps
-module tb_cache_top_4way;
-
-  // Parameters
-  localparam WORD_SIZE       = 32;
-  localparam WORDS_PER_BLOCK = 4;
-  localparam BLOCK_SIZE      = WORDS_PER_BLOCK * WORD_SIZE; // 128b
-  localparam NUM_BLOCKS      = 64;
-  localparam NUM_WAYS        = 4;
-  localparam NUM_SETS        = NUM_BLOCKS / NUM_WAYS;
-  localparam TAG_WIDTH       = 26;
-  localparam INDEX_WIDTH     = 4;
-  localparam OFFSET_WIDTH    = 2;
-
-  // Clock/reset
-  logic clk;
-  logic rst;
-
-  // CPU interface
-  logic req_valid;
-  logic req_type; // 0=read, 1=write
-  logic [31:0] address;
-  logic [31:0] data_in;
-  logic [31:0] data_out;
-  logic done_cache;
-
-  // Memory side
-  logic [127:0] data_out_mem;
-  logic ready_mem;
-  logic valid_mem;
- 
-
-  // DUT instantiation
-  top dut (
-    .clk(clk),
-    .rst(rst),
-    .req_valid(req_valid),
-    .req_type(req_type),
-    .address(address),
-    .data_in(data_in),
-    .data_out(data_out),
-   
-    .done_cache(done_cache),
-    .data_out_mem(data_out_mem),
-    .ready_mem(ready_mem),
-    .valid_mem(valid_mem)
-  );
-
-  // Clock generation
-  always #5 clk = ~clk;
-
-  // Reset + preload cache
-  initial begin
-    clk = 0;
-    rst = 1;
-    req_valid = 0;
-    req_type = 0;
-    data_in = 0;
-    address = 0;
-    data_out_mem = 0;
-    ready_mem = 0;
-    valid_mem = 0;
-    #15;
-    rst = 0;
-
-    // ----------------- Preload cache line for hits -----------------
-    // Put block at set index=2, way=0 with tag=0x1AAAA
-    dut.cache.cache[4'd2][0] = {
-        128'h11112222_33334444_55556666_77778888, // block data
-        26'h1AAAA,                               // TAG
-        1'b1,                                    // dirty=0
-        1'b1                                     // valid=1
-    };
-
-    // preload some other lines
-    dut.cache.cache[0][0] = {
-        128'hDEADBEEF_55667788_11223344_AABBCCDD,
-        26'h1ABCDE,
-        1'b1,
-        1'b1
-    };
-    dut.cache.cache[0][1] = {
-        128'hDAADBEEF_65667788_31223344_BABBCDDD,
-        26'h1CBBDE,
-        1'b0,
-        1'b1
-    };
-    dut.cache.cache[0][2] = {
-        128'hDAADBEEF_65667788_31223344_BABBCDDD,
-        26'h1BBBDE,
-        1'b0,
-        1'b1
-    };
-    dut.cache.cache[0][3] = {
-        128'hDAADBEEF_65667788_41223344_BABBCDDD,
-        26'h1DBBDE,
-        1'b0,
-        1'b1
-    };
-
-    $display("Preloaded cache line: TAG=0x1AAAA at index=2 (way0)");
-  end
-
-  // Stimulus
-  initial begin
-   
-
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1ABCDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-   
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1CBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-   
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1BBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-   
-   
-   
-     $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1DBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-    @(posedge clk);
-    address = {26'h1FBCEE, 4'h0, 2'h3};
-      req_type = 0;
-      req_valid=1;
-      rst=0;
-       @(posedge clk);
-      valid_mem=1;
-      ready_mem=1;
-      req_valid=0;
-      data_out_mem=128'hFAAABEEF_55667788_11223344_AABBCCDD;
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("read_en_mem: %0b", dut.cache.read_en_mem);
-      $display("write_en_cache: %0b", dut.cache.write_en_cache);
-     
-        $display("Dirty bit: %b", dut.cache.info1.dirty);
-        $display("Valid bit: %b", dut.cache.info1.valid);
-      $display("Next:",dut.controller.next_state);
-     $display("BEFORE WRITE cache line: %h",`timescale 1ns/1ps
-module tb_cache_top_4way;
-
-  // Parameters
-  localparam WORD_SIZE       = 32;
-  localparam WORDS_PER_BLOCK = 4;
-  localparam BLOCK_SIZE      = WORDS_PER_BLOCK * WORD_SIZE; // 128b
-  localparam NUM_BLOCKS      = 64;
-  localparam NUM_WAYS        = 4;
-  localparam NUM_SETS        = NUM_BLOCKS / NUM_WAYS;
-  localparam TAG_WIDTH       = 26;
-  localparam INDEX_WIDTH     = 4;
-  localparam OFFSET_WIDTH    = 2;
-
-  // Clock/reset
-  logic clk;
-  logic rst;
-
-  // CPU interface
-  logic req_valid;
-  logic req_type; // 0=read, 1=write
-  logic [31:0] address;
-  logic [31:0] data_in;
-  logic [31:0] data_out;
-  logic done_cache;
-
-  // Memory side
-  logic [127:0] data_out_mem;
-  logic ready_mem;
-  logic valid_mem;
- 
-
-  // DUT instantiation
-  top dut (
-    .clk(clk),
-    .rst(rst),
-    .req_valid(req_valid),
-    .req_type(req_type),
-    .address(address),
-    .data_in(data_in),
-    .data_out(data_out),
-   
-    .done_cache(done_cache),
-    .data_out_mem(data_out_mem),
-    .ready_mem(ready_mem),
-    .valid_mem(valid_mem)
-  );
-
-  // Clock generation
-  always #5 clk = ~clk;
-
-  // Reset + preload cache
-  initial begin
-    clk = 0;
-    rst = 1;
-    req_valid = 0;
-    req_type = 0;
-    data_in = 0;
-    address = 0;
-    data_out_mem = 0;
-    ready_mem = 0;
-    valid_mem = 0;
-    #15;
-    rst = 0;
-
-    // ----------------- Preload cache line for hits -----------------
-    // Put block at set index=2, way=0 with tag=0x1AAAA
-    dut.cache.cache[4'd2][0] = {
-        128'h11112222_33334444_55556666_77778888, // block data
-        26'h1AAAA,                               // TAG
-        1'b1,                                    // dirty=0
-        1'b1                                     // valid=1
-    };
-
-    // preload some other lines
-    dut.cache.cache[0][0] = {
-        128'hDEADBEEF_55667788_11223344_AABBCCDD,
-        26'h1ABCDE,
-        1'b1,
-        1'b1
-    };
-    dut.cache.cache[0][1] = {
-        128'hDAADBEEF_65667788_31223344_BABBCDDD,
-        26'h1CBBDE,
-        1'b0,
-        1'b1
-    };
-    dut.cache.cache[0][2] = {
-        128'hDAADBEEF_65667788_31223344_BABBCDDD,
-        26'h1BBBDE,
-        1'b0,
-        1'b1
-    };
-    dut.cache.cache[0][3] = {
-        128'hDAADBEEF_65667788_41223344_BABBCDDD,
-        26'h1DBBDE,
-        1'b0,
-        1'b1
-    };
-
-    $display("Preloaded cache line: TAG=0x1AAAA at index=2 (way0)");
-  end
-
-  // Stimulus
-  initial begin
-   
-
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1ABCDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-   
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1CBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-   
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1BBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-   
-   
-   
-     $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1DBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-    @(posedge clk);
-    address = {26'h1FBCEE, 4'h0, 2'h3};
-      req_type = 0;
-      req_valid=1;
-      rst=0;
-       @(posedge clk);
-      valid_mem=1;
-      ready_mem=1;
-      req_valid=0;
-      data_out_mem=128'hFAAABEEF_55667788_11223344_AABBCCDD;
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("read_en_mem: %0b", dut.cache.read_en_mem);
-      $display("write_en_cache: %0b", dut.cache.write_en_cache);
-     
-        $display("Dirty bit: %b", dut.cache.info1.dirty);
-        $display("Valid bit: %b", dut.cache.info1.valid);
-      $display("Next:",dut.controller.next_state);
-     $display("BEFORE WRITE cache line: %h",
-              dut.cache.cache[0][0][155:28]);
-       @(posedge clk);
-    $display("Current:",dut.controller.current_state);
-    $display("Next:",dut.controller.next_state);
-      $display("read_en_mem: %0b", dut.cache.read_en_mem);
-    $display("ready_cache: %0b", dut.controller.ready_cache);
-    ready_mem=1;
-    @(posedge clk);
-      $display("write_en_cache: %0b", dut.cache.write_en_cache);
-      ready_mem=1;
-    $display("Valid_cache : %b",dut.controller.valid_cache);
-      $display("ready_mem: %b",dut.controller.ready_mem);
-      $display("Write_en_mem %b: ",dut.cache.write_en_mem);
-      $display("read_en_cache : %b",dut.cache.read_en_cache);
-      $display("Dirty block out : %h",dut.cache.dirty_block_out);
-   
-       @(posedge clk);
-    $display("Current:",dut.controller.current_state);
-    $display("Next:",dut.controller.next_state);
-        $display("[%0t] AFTER WRITE cache line: %h",
-                  $time,
-                 dut.cache.cache[0][0][155:28]);
-    $display("PLRU: %b", dut.cache.plru[0].b1);
-    $display("PLRU: %b", dut.cache.plru[0].b2);
-    $display("PLRU: %b", dut.cache.plru[0].b3);
-      $display("Refill: %h", dut.controller.refill);
-      $display("Read_en_cache: %b", dut.controller.read_en_cache);
-      $display("DATA_OUT: %h", data_out);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-     
-      valid_mem=1;              
-      req_valid=0;
-     
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      $display("Refill: %h", dut.controller.refill);
-      $display("Read_en_cache: %b", dut.controller.read_en_cache);
-      $display("DATA_OUT: %h", data_out);
-     
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      $display("----------------------------END-------------------------");
-   $finish;
- 
-  end
-endmodule
-	
-
-              dut.cache.cache[0][0][155:28]);
-       @(posedge clk);
-    $display("Current:",dut.controller.current_state);
-    $display("Next:",dut.controller.next_state);
-      $display("read_en_mem: %0b", dut.cache.read_en_mem);
-    $display("ready_cache: %0b", dut.controller.ready_cache);
-    ready_mem=1;
-    @(posedge clk);
-      $display("write_en_cache: %0b", dut.cache.write_en_cache);
-      ready_mem=1;
-    $display("Valid_cache : %b",dut.controller.valid_cache);
-      $display("ready_mem: %b",dut.controller.ready_mem);
-      $display("Write_en_mem %b: ",dut.cache.write_en_mem);
-      $display("read_en_cache : %b",dut.cache.read_en_cache);
-      $display("Dirty block out : %h",dut.cache.dirty_block_out);
-   
-       @(posedge clk);
-    $display("Current:",dut.controller.current_state);
-    $display("Next:",dut.controller.next_state);
-        $display("[%0t] AFTER WRITE cache line: %h",
-                  $time,
-                 dut.cache.cache[0][0][155:28]);
-    $display("PLRU: %b", dut.cache.plru[0].b1);
-    $display("PLRU: %b", dut.cache.plru[0].b2);
-    $display("PLRU: %b", dut.cache.plru[0].b3);
-      $display("Refill: %h", dut.controller.refill);
-      $display("Read_en_cache: %b", dut.controller.read_en_cache);
-      $display("DATA_OUT: %h", data_out);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-     
-      valid_mem=1;              
-      req_valid=0;
-     
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      $display("Refill: %h", dut.controller.refill);
-      $display("Read_en_cache: %b", dut.controller.read_en_cache);
-      $display("DATA_OUT: %h", data_out);
-     
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      $display("----------------------------END-------------------------");
-   $finish;
- 
-  end
-endmodule
-	
-
-    .req_valid(req_valid),
-    .req_type(req_type),
-    .address(address),
-    .data_in(data_in),
-    .data_out(data_out),
-   
-    .done_cache(done_cache),
-    .data_out_mem(data_out_mem),
-    .ready_mem(ready_mem),
-    .valid_mem(valid_mem)
-  );
-
-  // Clock generation
-  always #5 clk = ~clk;
-
-  // Reset + preload cache
-  initial begin
-    clk = 0;
-    rst = 1;
-    req_valid = 0;
-    req_type = 0;
-    data_in = 0;
-    address = 0;
-    data_out_mem = 0;
-    ready_mem = 0;
-    valid_mem = 0;
-    #15;
-    rst = 0;
-
-    // ----------------- Preload cache line for hits -----------------
-    // Put block at set index=2, way=0 with tag=0x1AAAA
-    dut.cache.cache[4'd2][0] = {
-        128'h11112222_33334444_55556666_77778888, // block data
-        26'h1AAAA,                               // TAG
-        1'b1,                                    // dirty=0
-        1'b1                                     // valid=1
-    };
-
-    // preload some other lines
-    dut.cache.cache[0][0] = {
-        128'hDEADBEEF_55667788_11223344_AABBCCDD,
-        26'h1ABCDE,
-        1'b1,
-        1'b1
-    };
-    dut.cache.cache[0][1] = {
-        128'hDAADBEEF_65667788_31223344_BABBCDDD,
-        26'h1CBBDE,
-        1'b0,
-        1'b1
-    };
-    dut.cache.cache[0][2] = {
-        128'hDAADBEEF_65667788_31223344_BABBCDDD,
-        26'h1BBBDE,
-        1'b0,
-        1'b1
-    };
-    dut.cache.cache[0][3] = {
-        128'hDAADBEEF_65667788_41223344_BABBCDDD,
-        26'h1DBBDE,
-        1'b0,
-        1'b1
-    };
-
-    $display("Preloaded cache line: TAG=0x1AAAA at index=2 (way0)");
-  end
-
-  // Stimulus
-  initial begin
-   
-
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1ABCDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-   
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1CBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-   
-    // ---------------- READ HIT ----------------
-    $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1BBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-   
-   
-   
-     $display("\n=== READ HIT TEST 1 ===");
-    @(posedge clk);
-    address  = {26'h1DBBDE, 4'h0, 2'b01};
-    req_type = 0; // read
-    req_valid= 1;
-    @(posedge clk);
-    req_valid= 0;
-
-    repeat(2) @(posedge clk);
-    $display("READ HIT: data_out=%h, done_cache=%b", data_out, done_cache);
-     
-    @(posedge clk);
-    address = {26'h1FBCEE, 4'h0, 2'h3};
-      req_type = 0;
-      req_valid=1;
-      rst=0;
-       @(posedge clk);
-      valid_mem=1;
-      ready_mem=1;
-      req_valid=0;
-      data_out_mem=128'hFAAABEEF_55667788_11223344_AABBCCDD;
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("read_en_mem: %0b", dut.cache.read_en_mem);
-      $display("write_en_cache: %0b", dut.cache.write_en_cache);
-     
-        $display("Dirty bit: %b", dut.cache.info1.dirty);
-        $display("Valid bit: %b", dut.cache.info1.valid);
-      $display("Next:",dut.controller.next_state);
-     $display("BEFORE WRITE cache line: %h",
-              dut.cache.cache[0][0][155:28]);
-       @(posedge clk);
-    $display("Current:",dut.controller.current_state);
-    $display("Next:",dut.controller.next_state);
-      $display("read_en_mem: %0b", dut.cache.read_en_mem);
-    $display("ready_cache: %0b", dut.controller.ready_cache);
-    ready_mem=1;
-    @(posedge clk);
-      $display("write_en_cache: %0b", dut.cache.write_en_cache);
-      ready_mem=1;
-    $display("Valid_cache : %b",dut.controller.valid_cache);
-      $display("ready_mem: %b",dut.controller.ready_mem);
-      $display("Write_en_mem %b: ",dut.cache.write_en_mem);
-      $display("read_en_cache : %b",dut.cache.read_en_cache);
-      $display("Dirty block out : %h",dut.cache.dirty_block_out);
-   
-       @(posedge clk);
-    $display("Current:",dut.controller.current_state);
-    $display("Next:",dut.controller.next_state);
-        $display("[%0t] AFTER WRITE cache line: %h",
-                  $time,
-                 dut.cache.cache[0][0][155:28]);
-    $display("PLRU: %b", dut.cache.plru[0].b1);
-    $display("PLRU: %b", dut.cache.plru[0].b2);
-    $display("PLRU: %b", dut.cache.plru[0].b3);
-      $display("Refill: %h", dut.controller.refill);
-      $display("Read_en_cache: %b", dut.controller.read_en_cache);
-      $display("DATA_OUT: %h", data_out);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-     
-      valid_mem=1;              
-      req_valid=0;
-     
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      $display("Refill: %h", dut.controller.refill);
-      $display("Read_en_cache: %b", dut.controller.read_en_cache);
-      $display("DATA_OUT: %h", data_out);
-     
-      @(posedge clk);
-      $display("Current_State:",dut.controller.current_state);
-      $display("Next:",dut.controller.next_state);
-      $display("----------------------------END-------------------------");
-   $finish;
- 
-  end
-endmodule
-	
-
+                cache[index][3][TAG_WIDTH+1:2] <= tag;
                 cache[index][3][BLOCK_SIZE + TAG_WIDTH + 1 : TAG_WIDTH + 2] <= data_in_mem;
                 accessed_line <= 3;
             
@@ -1435,4 +519,3 @@ endmodule
     end
 
 endmodule
-	
