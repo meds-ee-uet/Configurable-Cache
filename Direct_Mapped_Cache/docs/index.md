@@ -157,17 +157,7 @@ Our first implementation is a direct-mapped cache with the following configurati
   <img src="outputs/dataflow.png" width="600" height="400">
 </div>
 
-- CPU sends `req_valid`, `req_type`, `address [31:0]`, `data_in [31:0]` (for writes).
-- **Cache Decoder** splits the address into `tag`, `index`, `block offset`.
-- **Comparator** checks if the `tag` matches and valid bit is set, generating `hit`.
-- **Cache Controller**:
-  - Decides actions based on `hit`, `dirty_bit`, `req_type`, `ready_mem`.
-  - Generates control signals (`read_en_cache`, `write_en_cache`, `refill`, etc.).
-- **Cache Memory**:
-  - **Read hit**: sends `data_out [31:0]` to CPU.
-  - **Write hit**: updates the block and sets dirty bit.
-  - **Miss**: may write back dirty block (`dirty_block_out [127:0]`) and refill (`data_in_mem [127:0]`).
-- **Main Memory** provides/accepts 128-bit blocks for refill or write-back using handshake signals.
+
 
 
   ## ⚙️ Module-by-Module Explanation
