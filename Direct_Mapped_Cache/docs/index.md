@@ -66,7 +66,7 @@ To implement logic that handles:
 ## ***OUR STRATEGY***:
 We decided to move from basic fundamentals to higher level. So, we implemented a direct mapped cache first. Then we will move our approach to set associative cache mapping.
 
-  ### For Testing:
+  ## For Testing:
       We started from testing our rtl module by module to check their functionality and then we integrated  all the modules later tested them again for each cache starting from direct mapped cache.
 
 ## ***DIRECT MAPPED CACHE***:
