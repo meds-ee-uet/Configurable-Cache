@@ -154,7 +154,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 <div align="center">
-  <img src="/outputs/dataflow.png" width="600" height="400">
+  <img src="/outputs/dataflow.PNG" width="600" height="400">
 </div>
 
 - CPU sends `req_valid`, `req_type`, `address [31:0]`, `data_in [31:0]` (for writes).
