@@ -118,19 +118,23 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 ## **Inputs:**
-- `req_type`: Whether you want to read (`req_type = 0`) or write.
-- `req_valid`: Tells the cache there is a request.
-- `address [31:0]`: Address where you want to read or write.
-- `data_in [31:0]`: Data input from CPU.
-- `data_out [31:0]`: Data output to CPU.
-- `data_in_mem [127:0]`: Data input from memory.
-- `clk`: Clock.
-- `rst`: Reset.
+| **Signal**    | **Width** | **Direction** | **Description**                           |
+|---------------|-----------|---------------|-------------------------------------------|
+| `req_type`    | 1 bit     | Input         | Request type: `0` = Read, `1` = Write     |
+| `req_valid`   | 1 bit     | Input         | Indicates a valid request from CPU        |
+| `address`     | 32 bits   | Input         | Address for read/write operation          |
+| `data_in`     | 32 bits   | Input         | Data input from CPU (for writes)          |
+| `data_out`    | 32 bits   | Output        | Data output to CPU (for reads)            |
+| `data_in_mem` | 128 bits  | Input         | Cache line (block) fetched from memory    |
+| `clk`         | 1 bit     | Input         | Clock signal                              |
+| `rst`         | 1 bit     | Input         | Reset signal                              |
 
 ## **Outputs:**
-- `req_type`: (pass-through or processed based on your design).
-- `address [31:0]`: Address to memory or next stage.
-- `dirty_blockout [127:0]`: The dirty block sent to memory if eviction occurs.
+| **Signal**        | **Width** | **Direction** | **Description**                                      |
+|--------------------|-----------|---------------|------------------------------------------------------|
+| `req_type`        | 1 bit     | Output        | Pass-through or processed request type (read/write)  |
+| `address`         | 32 bits   | Output        | Address to memory or next stage                      |
+| `dirty_blockout`  | 128 bits  | Output        | Dirty block sent to memory if eviction occurs        |
 
   
 
@@ -147,6 +151,11 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 ###  Datapath (Brief)
+
+
+<div align="center">
+  <img src="/outputs/dataflow.png" width="600" height="400">
+</div>
 
 - CPU sends `req_valid`, `req_type`, `address [31:0]`, `data_in [31:0]` (for writes).
 - **Cache Decoder** splits the address into `tag`, `index`, `block offset`.
