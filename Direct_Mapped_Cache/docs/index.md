@@ -262,21 +262,29 @@ div align="center">
 </div>
 
 
-- **Inputs**:
-  - `clk`, `tag`, `index`, `blk_offset`
-  - `req_type`, `read_en_cache`, `write_en_cache`
-  - `ready_mem`, `data_in_mem [127:0]`, `data_in [31:0]`
-- **Outputs**:
-  - `data_out [31:0]` (to CPU)
-  - `dirty_block_out [127:0]` (to memory on write-back)
-  - `dirty_bit`, `hit`, `done_cache`
-- **Function**:
-  - On **read hit**: sends required word to CPU.
-  - On **write hit**: updates the word in the cache and sets the dirty bit.
-  - On **miss**:
-    - Provides dirty block if necessary.
-    - Accepts new block from memory on refill.
-   
+### Inputs
+| **Signal** |
+|-------------|
+| `clk`, `tag`, `index`, `blk_offset` |
+| `req_type`, `read_en_cache`, `write_en_cache` |
+| `ready_mem`, `data_in_mem [127:0]`, `data_in [31:0]` |
+
+### Outputs
+| **Signal** |
+|-------------|
+| `data_out [31:0]` (to CPU) |
+| `dirty_block_out [127:0]` (to memory on write-back) |
+| `dirty_bit`, `hit`, `done_cache` |
+
+### Function
+| **Description** |
+|------------------|
+| On **read hit**: sends required word to CPU. |
+| On **write hit**: updates the word in the cache and sets the dirty bit. |
+| On **miss**: |
+| • Provides dirty block if necessary. |
+| • Accepts new block from memory on refill. |
+
       
 
 
