@@ -170,15 +170,14 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 
-- **Inputs**: `clk`, `address [31:0]`
-- **Outputs**: 
-  - `tag [23:0]`
-  - `index [5:0]`
-  - `blk_offset [1:0]`
-- **Function**: Splits the 32-bit CPU address into:
-  - `tag` (upper bits) for comparison
-  - `index` to locate the cache line
-  - `block offset` to select the word in the block
+| **Port**      | **Width** | **Direction** | **Description**                                |
+|---------------|-----------|---------------|------------------------------------------------|
+| `clk`         | 1 bit     | Input         | Clock signal                                   |
+| `address`     | 32 bits   | Input         | CPU address                                    |
+| `tag`         | 24 bits   | Output        | Upper bits [31:8], used for tag comparison     |
+| `index`       | 6 bits    | Output        | Bits [7:2], used to locate cache line          |
+| `blk_offset`  | 2 bits    | Output        | Bits [1:0], used to select word within a block |
+
 
 ---
 
@@ -190,26 +189,44 @@ div align="center">
 </div>
 
 
-- **Inputs**:  
-  - `clk`, `rst`  
-  - `req_valid`, `req_type` (0 = read, 1 = write)  
-  - `hit`, `dirty_bit`  
-  - `req_ready_mem`, `resp_valid_mem`  
+### Inputs
+| **Signal**        | **Width** | **Description**                         |
+|--------------------|-----------|-----------------------------------------|
+| `clk`             | 1 bit     | Clock signal                            |
+| `rst`             | 1 bit     | Reset signal                            |
+| `req_valid`       | 1 bit     | Indicates a valid CPU request           |
+| `req_type`        | 1 bit     | Request type: `0` = Read, `1` = Write   |
+| `hit`             | 1 bit     | Indicates if cache lookup resulted in hit |
+| `dirty_bit`       | 1 bit     | Shows if the cache block is dirty       |
+| `req_ready_mem`   | 1 bit     | Memory ready to accept a request        |
+| `resp_valid_mem`  | 1 bit     | Memory response valid (data available)  |
 
-- **Outputs**:  
-  - **Main Memory Interface**:  
-    - `req_valid_mem`, `resp_ready_mem`, `read_en_mem`, `write_en_mem`  
-  - **Cache Interface**:  
-    - `read_en_cache`, `write_en_cache`, `write_en`, `refill`, `done_cache`
+### Outputs – Main Memory Interface
+| **Signal**        | **Width** | **Description**                       |
+|--------------------|-----------|---------------------------------------|
+| `req_valid_mem`   | 1 bit     | Valid request to memory               |
+| `resp_ready_mem`  | 1 bit     | Ready to accept response from memory  |
+| `read_en_mem`     | 1 bit     | Enable memory read                    |
+| `write_en_mem`    | 1 bit     | Enable memory write                   |
 
-- **Function**:  
-  - Implements FSM with the following states:  
-    `IDLE`, `COMPARE`, `WRITE_BACK`, `WAIT_ALLOCATE`, `WRITE_ALLOCATE`, `REFILL_DONE`
-  - On **read/write hit**: allows CPU to complete operation directly.
-  - On **miss**:
-    - If **clean**: refills cache from memory.
-    - If **dirty**: writes back to memory first, then refills.
-  - `WAIT_ALLOCATE` provides a separation cycle between memory write and read.
+### Outputs – Cache Interface
+| **Signal**        | **Width** | **Description**                       |
+|--------------------|-----------|---------------------------------------|
+| `read_en_cache`   | 1 bit     | Enable cache read                     |
+| `write_en_cache`  | 1 bit     | Enable cache write                    |
+| `write_en`        | 1 bit     | Write enable signal for cache block   |
+| `refill`          | 1 bit     | Initiates cache refill                |
+| `done_cache`      | 1 bit     | Indicates cache operation completion  |
+
+### Function
+| **Aspect**        | **Description**                                                                 |
+|--------------------|---------------------------------------------------------------------------------|
+| FSM States         | `IDLE`, `COMPARE`, `WRITE_BACK`, `WAIT_ALLOCATE`, `WRITE_ALLOCATE`, `REFILL_DONE` |
+| Read/Write Hit     | CPU completes operation directly                                               |
+| Miss – Clean Block | Refill cache from memory                                                       |
+| Miss – Dirty Block | Write back to memory first, then refill                                        |
+| Wait Cycle         | `WAIT_ALLOCATE` separates memory write and subsequent read                     |
+
 
 ---
 
