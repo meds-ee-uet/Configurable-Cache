@@ -291,12 +291,12 @@ A header file (`cache_defs.sv`) has been added to centralize the cache controlle
 
 ### 📌 Purpose
 
-This testbench verifies the **`cache_decoder` module** by:
+| **Field**       | **Bit Range** | **Description**                  |
+|------------------|---------------|----------------------------------|
+| `Tag`           | [31:8]        | Upper 24 bits used as cache tag  |
+| `Index`         | [7:2]         | 6 bits used to select cache line |
+| `Block Offset`  | [1:0]         | 2 bits used to locate word/byte  |
 
- Checking **correct extraction** of:
-- **Tag** (bits [31:8])
-- **Index** (bits [7:2])
-- **Block Offset** (bits [1:0])
 
 from a **32-bit address**, ensuring your cache’s address decoding logic is functioning correctly before integrating into the full cache pipeline.
 
