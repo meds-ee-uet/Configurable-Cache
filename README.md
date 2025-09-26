@@ -9,4 +9,4 @@
 ---
 
 
-[Documentation Status](https://configurable-cache.readthedocs.io/en/latest/)
+[Documentation Status](https://repo-k.readthedocs.io/en/latest/)
