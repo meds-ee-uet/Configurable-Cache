@@ -1,7 +1,13 @@
-// Code your testbench here
-// or browse Examples
-// Code your testbench here
-// or browse Examples
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the test code of  cache memory module.
+//
+// Author: Ayesha Anwar.
+// Date: 20th, july, 2025.
+// CACHE CONTROLLER IS SAME AS DIRECT MAPPED CACHE, 2 WAY CACHE AND N WAY CACHE
+
 `timescale 1ns/1ps
 
   // Include the parameter definitions
@@ -285,4 +291,5 @@ data_in_mem=128'hBACDEFEF_55667788_11223344_AABBCCDD;
      $finish;
       
     end
+
 endmodule
