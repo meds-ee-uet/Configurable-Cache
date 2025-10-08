@@ -13,6 +13,7 @@
   - [Directory Overview](#-directory-overview)
   - [Address Decoder Configuration](#️-address-decoder-configuration)
   - [Parameter Configuration](#-parameter-configuration)
+  - [Documentation](#Documentation)
 
 ---
 # Configurable Cache (SystemVerilog Implementation)
@@ -107,5 +108,5 @@ Below is the example of parameters you can edit:
 ```systemverilog
 parameter int NUM_WAYS         = 4; // Must be a power of 2 (e.g., 2, 4, 8, 16)
 ```
-
+### Documentation
 [Documentation Status](https://repo-k.readthedocs.io/en/latest/)
