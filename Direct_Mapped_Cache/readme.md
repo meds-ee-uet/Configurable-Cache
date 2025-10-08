@@ -41,7 +41,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 ## **TOP LEVEL DIAGRAM**:
 
 <div align="center">
-  <img src="docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png" width="600" height="400">
+  <img src="./docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png" width="600" height="400">
 </div>
 
 
