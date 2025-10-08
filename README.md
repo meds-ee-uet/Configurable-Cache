@@ -9,36 +9,79 @@
 ---
 ## 📁 Directory Structure
 
-Cache_Project/
-├── Direct_Mapped_Cache/
+```
+cache-project/
+│
+├── direct-mapped-cache/
 │   ├── docs/
 │   ├── rtl/
 │   ├── testbench/
-│   └── modular_integration/
+│   └── modular-integration/
 │       ├── rtl/
 │       └── testbench/
 │
-├── 2_Way_Set_Associative_Cache/
+├── 2-way-set-associative-cache/
 │   ├── docs/
 │   ├── rtl/
 │   ├── testbench/
-│   └── modular_integration/
+│   └── modular-integration/
 │       ├── rtl/
 │       └── testbench/
 │
-├── 4_Way_Set_Associative_Cache/
+├── 4-way-set-associative-cache/
 │   ├── rtl/
 │   ├── testbench/
-│   └── modular_integration/
+│   └── modular-integration/
 │       ├── rtl/
 │       └── testbench/
 │
-└── Configurable_N_Way_Set_Associative_Cache/
+└── configurable-n-way-set-associative-cache/
     ├── rtl/
     ├── testbench/
-    └── modular_integration/
+    └── modular-integration/
         ├── rtl/
         └── testbench/
+```
 
+## 🧭 User Guide
+
+The **Configurable_N_Way_Set_Associative_Cache** directory provides a flexible and parameterized implementation of a cache memory system.  
+It allows users to easily configure the **cache associativity (number of ways)**, **address width**, **block size**, and other key architectural parameters.
+
+### 📂 Directory Overview
+
+Inside the `Configurable_N_Way_Set_Associative_Cache/` directory, you’ll find:
+
+- **`rtl/`** – Contains the main SystemVerilog source files for the configurable cache design.  
+- **`testbench/`** – Includes verification modules and simulation files.  
+- **`modular_integration/`** – Provides integrated RTL and testbench files for modular simulation and synthesis.
+
+---
+
+### ⚙️ Address Decoder Configuration
+
+In the `rtl/` folder, you will find a file named **`decoders.sv`**, which contains address decoding logic for multiple cache configurations:
+
+- **2-way set associative cache**  
+- **4-way set associative cache**  
+- **8-way set associative cache**  
+- **12-way set associative cache**
+
+Each decoder is implemented within the same file for convenience.  
+You can **comment out the decoders** that you are not using and **enable only the one** corresponding to your desired associativity.  
+This approach makes the cache module adaptable while keeping all decoding options in one place.
+
+---
+
+### 🧩 Parameter Configuration
+
+A dedicated **header file** is included to make the design customizable.  
+This file defines important parameters that can be modified according to your system’s requirements.
+
+Below is the example of parameters you can edit:
+
+```systemverilog
+parameter int NUM_WAYS         = 4; // Must be a power of 2 (e.g., 2, 4, 8, 16)
+```
 
 [Documentation Status](https://repo-k.readthedocs.io/en/latest/)
