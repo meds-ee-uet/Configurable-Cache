@@ -32,7 +32,6 @@ To build a cache system that is modular and configurable, supporting different a
 - 2-way set associative cache
 - 4-way set associative cache
 - n-way set associative cache
-- 
 2. **Explore Cache Organization Techniques**: 
 To understand and implement multiple cache configurations, comparing their behavior and performance in handling memory access patterns.
 
