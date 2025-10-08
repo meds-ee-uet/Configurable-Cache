@@ -1,1 +1,5 @@
+site_name: CONFIGURABLE cache Docs
+docs_dir: Direct_Mapped_Cache
 
+nav:
+  - Home: readme.md
