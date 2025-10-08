@@ -1,4 +1,4 @@
-/ Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
 // Licensed under the Apache License, Version 2.0, see LICENSE file for details.
 // SPDX-License-Identifier: Apache-2.0
 // Author:  Ammarah Wakeel, Ayesha Anwar, Eman Nasarrr.
