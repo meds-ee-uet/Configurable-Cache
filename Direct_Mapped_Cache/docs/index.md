@@ -14,29 +14,12 @@
 - [Our Strategy](#our-strategy)
 - [For Testing](#for-testing)
 - [Direct Mapped Cache](../readme.md)
-
-  
 - [2-Way Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/blob/main/2-WAY%20SET_ASSOCIATIVE%20CACHE/README2.md)
- 
 - [4-Way Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/blob/main/4_SET_ASSOCIATIVE_CACHE/README.md)
 - [N-Way CONFIGURABLE Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/tree/main/configurable(n-way)_set-associative_cache#readme)
- 
 - [Synthesization of RTL](#synthesization-of-rtl)
 - [Summary](#Summary)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- 
 ## **PROJECT OVERVIEW**:
 This project implements a direct-mapped cache,2-way set associative cache,4-way set associative cahe and configurable (n-way)set associative cache controller with support for basic memory transactions. It simulates how a CPU communicates with memory via a cache to reduce access latency and improve performance. 
 
@@ -45,14 +28,11 @@ The primary objectives of this project are:
 
 1. **Design a Configurable Cache Architecture**: 
 To build a cache system that is modular and configurable, supporting different associativity levels:
-
 - Direct-mapped cache
-
 - 2-way set associative cache
-
 - 4-way set associative cache
 - n-way set associative cache
-
+- 
 2. **Explore Cache Organization Techniques**: 
 To understand and implement multiple cache configurations, comparing their behavior and performance in handling memory access patterns.
 
