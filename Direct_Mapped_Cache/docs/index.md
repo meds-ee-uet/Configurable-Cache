@@ -13,7 +13,8 @@
 - [Objective](#objective)
 - [Our Strategy](#our-strategy)
 - [For Testing](#for-testing)
-- [Direct Mapped Cache](Direct_Mapped_Cache/readme.md)
+- [Direct Mapped Cache](../readme.md)
+
   
 - [2-Way Set-Associative Cache](#2-way-set-associative-cache)
  
