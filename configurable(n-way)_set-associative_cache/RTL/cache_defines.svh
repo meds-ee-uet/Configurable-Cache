@@ -1,3 +1,11 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the header file of cache.
+//
+// Author:  Ayesha Anwar.
+// Date: 15th, july, 2025.
 // ============================================================
 // cache_defines.svh
 // Common parameters, typedefs, and macros for cache RTL
@@ -45,3 +53,4 @@ typedef struct packed {
 } cache_info_t;
 
 `endif // CACHE_DEFINES_SVH
+
