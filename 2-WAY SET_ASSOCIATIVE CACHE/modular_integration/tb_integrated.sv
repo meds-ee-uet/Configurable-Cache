@@ -1,3 +1,13 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the test code of integrated 2 way cache memory with other module.
+//
+// Author:  Ayesha Anwar.
+// Date: 21st, july, 2025.
+// CACHE CONTROLLER IS SAME AS DIRECT MAPPED CACHE, 2 WAY CACHE AND N WAY CACHE
+
 `timescale 1ns/1ps
 module tb_top;
     parameter int WORD_SIZE         = 32; // bits per word
@@ -464,4 +474,5 @@ module tb_top;
 $finish;
 end 
 endmodule
+
 
