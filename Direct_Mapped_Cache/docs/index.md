@@ -8,6 +8,26 @@
 
 ---
 
+## 📘 Table of Contents
+
+- 
+- [Project Overview](#project-overview)
+- [Objective](#objective)
+- [Our Strategy](#our-strategy)
+- [For Testing](#for-testing)
+- [Direct Mapped Cache](Direct_Mapped_Cache/readme.md)
+  
+- [2-Way Set-Associative Cache](#2-way-set-associative-cache)
+ 
+- [4-Way Set-Associative Cache](#4-way-set-associative-cache)
+  - [Overview](#1-overview)
+  - [Specifications](#2--specifications-of-our-4-way-set-associative-cache)
+  - [Top-Level Diagram](#3--top-level-diagram-4-way-vs-direct-mapped)
+  - [Datapath Overview](#4--datapath-4-way-overview)
+  - [Cache Controller (FSM Brief)](#5--cache-controller-fsm-brief-1)
+  - [Module-by-Module Explanation](#module-by-module-explanation-2)
+  - [Testbench Documentation](#testbench-documentation-for-cache_memory-1)
+- [Synthesization of RTL](#synthesization-of-rtl)
 
 
 
