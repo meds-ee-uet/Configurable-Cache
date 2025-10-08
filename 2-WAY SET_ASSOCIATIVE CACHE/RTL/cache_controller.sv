@@ -1,3 +1,11 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the code of controler of cache memory.
+//
+// Author: Ammarah Wakeel, Ayesha Anwar, Eman Nasar.
+// Date: 15th, july, 2025.
 // CACHE CONTROLLER IS SAME AS DIRECT MAPPED CACHE, 2 WAY CACHE AND N WAY CACHE
 
 module cache_controller (
