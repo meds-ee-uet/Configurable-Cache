@@ -19,6 +19,7 @@
 - [2-Way Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/blob/main/2-WAY%20SET_ASSOCIATIVE%20CACHE/README2.md)
  
 - [4-Way Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/blob/main/4_SET_ASSOCIATIVE_CACHE/README.md)
+- [N-Way CONFIGURABLE Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/tree/main/configurable(n-way)_set-associative_cache#readme)
  
 - [Synthesization of RTL](#synthesization-of-rtl)
 
