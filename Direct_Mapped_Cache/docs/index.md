@@ -22,6 +22,7 @@
 - [N-Way CONFIGURABLE Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/tree/main/configurable(n-way)_set-associative_cache#readme)
  
 - [Synthesization of RTL](#synthesization-of-rtl)
+- [Summary](#Summary)
 
 
 
@@ -87,9 +88,24 @@ We started from testing our RTL module by module to check their functionality, a
 
 
 
-# Synthesization of RTL:
+## Synthesization of RTL:
 we synthesized RTL on Vivado to check its compatibility with hardware implementation by analyzing the utilization report.
 [synthesis_vivado](https://github.com/ee-uet/configurable-cache/tree/388368cb34323a59cb31c21528f4e31c361c0388/synthesis_vivado)
+
+## Summary :
+
+
+In this documentation, the **datapath** and **controller diagrams** have been provided only for the **Direct-Mapped Cache**.  
+This was done because the **core architecture** and **control logic** remain **identical** across all cache configurations — from **Direct-Mapped** to **N-Way Configurable Caches**.
+
+A **common cache controller** was designed to be used across all versions.  
+It is responsible for handling operations such as read, write, cache miss detection, write-back, and refill through the same **finite state machine (FSM)**.
+
+The **primary difference** among cache configurations lies within the **cache memory module**, where the **associativity** and **replacement policy** are varied.  
+While the Direct-Mapped Cache contains a single line per set, multi-way caches (such as 2-way or N-way) perform **parallel tag comparisons** and utilize the **PLRU (Pseudo-Least Recently Used)** replacement policy to determine which block should be replaced during a miss.
+
+Hence, the explanation and diagrams of the **Direct-Mapped Cache** serve as the conceptual foundation for understanding all **higher-associativity caches** implemented in this project.
+
 
 
 
