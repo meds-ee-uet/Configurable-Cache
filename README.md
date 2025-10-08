@@ -32,8 +32,8 @@
 <p align="center">
   <img src="/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png"  width="360">
 </p>
-## 📁 Directory Structure
 
+## ***Directory Structure***
 ```
 cache-project/
 │
