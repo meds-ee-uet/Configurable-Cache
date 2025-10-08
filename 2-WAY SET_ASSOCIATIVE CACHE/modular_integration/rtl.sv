@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0, see LICENSE file for details.
 // SPDX-License-Identifier: Apache-2.0
 //
-// Description: This file contains the test code of integrated 2 way cache memory with other module.
+// Description: This file contains the code of integrated 2 way cache memory with other module.
 //
 // Author:  Ayesha Anwar.
 // Date: 21st, july, 2025.
@@ -445,3 +445,4 @@ parameter int OFFSET_WIDTH      = $clog2(WORDS_PER_BLOCK)
     end
 
 endmodule
+
