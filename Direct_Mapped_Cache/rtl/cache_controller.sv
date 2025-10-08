@@ -1,3 +1,12 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+//Description : this file contains RTL of cache controller..
+// Author:  Ammarah Wakeel.
+// Date: 28th, june, 2025.
+// CACHE CONTROLLER IS SAME AS DIRECT MAPPED CACHE, 2 WAY CACHE AND N WAY CACHE
+
 module cache_controller (
     input  logic clk,         // Clock signal
     input  logic rst,         // Asynchronous reset signal
@@ -140,4 +149,5 @@ module cache_controller (
     end
 
 endmodule
+
 
