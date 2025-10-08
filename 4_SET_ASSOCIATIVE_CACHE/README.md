@@ -253,7 +253,7 @@ When a miss occurs:
 
 #### iv- **Read and Write Operations**
 
-- #### iv- **Read and Write Operations**
+
 
 - **On a Read Hit**  
 ```systemverilog
@@ -262,9 +262,10 @@ if (hit) begin
     // update PLRU for this set
     plru[set] = update_plru(plru[set], hit_way);
 end
+```
 
 
-- **On a Write Hit** 
+-   **On a Write Hit** 
 ```systemverilog 
  if (hit) begin
     cache[set][hit_way].block[blk_offset] = data_in;
