@@ -3,3 +3,5 @@ docs_dir: Direct_Mapped_Cache/docs
 
 nav:
   - Home: index.md
+  - Direct Mapped Cache: directmappedreadme.md
+
