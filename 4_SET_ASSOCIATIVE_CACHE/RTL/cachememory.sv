@@ -1,3 +1,10 @@
+/ Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+// Author:  Ammarah Wakeel, Ayesha Anwar, Eman Nasarrr.
+// Date: 5th, August, 2025.
+// CACHE CONTROLLER IS SAME AS DIRECT MAPPED CACHE, 2 WAY CACHE AND N WAY CACHE
+
 // ============================================================================
 // Module: cache_memory (4-way Set-Associative Cache with PLRU Replacement)
 // Description:
