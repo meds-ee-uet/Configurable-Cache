@@ -92,7 +92,7 @@ We started from testing our RTL module by module to check their functionality, a
 we synthesized RTL on Vivado to check its compatibility with hardware implementation by analyzing the utilization report.
 [synthesis_vivado](https://github.com/ee-uet/configurable-cache/tree/388368cb34323a59cb31c21528f4e31c361c0388/synthesis_vivado)
 
-## Summary :
+## Summary 
 
 
 In this documentation, the **datapath** and **controller diagrams** have been provided only for the **Direct-Mapped Cache**.  
