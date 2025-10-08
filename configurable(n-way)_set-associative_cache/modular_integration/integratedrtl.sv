@@ -1,3 +1,11 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the RTL code of n way integrated cache modules.
+//
+// Author: Ayesha Anwar.
+// Date: 17th, August, 2025.
 // Code your design here
 module cache_top #(
     parameter int ADDR_WIDTH       = 32,
@@ -498,5 +506,6 @@ assign dirty_bit = dirty_comb;
             plru[index] <= plru_after_access(plru[index], accessed_way);
         end
     end
+
 
 endmodule
