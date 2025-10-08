@@ -1,8 +1,3 @@
-#  2-WAY SET ASSOCIATIVE CACHE
-## 1- What is a 2-Way Set Associative Cache?
-A set-associative cache allows each memory block to map to a specific set containing multiple lines (ways).
-
-In 2-way set associative, each set contains 2 lines. The cache index selects a set, but within that set, two tags are compared in parallel. Replacement policy (e.g., LRU) decides which line to evict when the set is full.
 ## 2- Specifications of Our 2-Way Set Associative Cache:
 
 
@@ -341,7 +336,17 @@ It systematically simulates read and write operations across multiple ways of a 
 - **Preloaded Cache Content**: Controlled initialization for targeted tests  
 - **Cycle-by-Cycle Verification**: Uses `@(posedge clk)` for stepwise operations  
 - **Readable Logs**: Shows hit/miss, dirty bit, PLRU victim, and cache state  
-- **Waveform-Friendly**: Clear signal transitions for debugging  
+- **Waveform-Friendly**: Clear signal transitions for debugging
+
+
+
+## Testing of integrated RTL modules:
+[modular_integration](https://github.com/ee-uet/configurable-cache/tree/main/2-WAY%20SET_ASSOCIATIVE%20CACHE/modular_integration)
+
+
+
+
+
 
 
 
