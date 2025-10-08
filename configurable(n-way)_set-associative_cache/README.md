@@ -1,4 +1,4 @@
-# 🧠 N-WAY CONFIGURABLE CACHE
+#  N-WAY CONFIGURABLE CACHE
 
 ## 1. What is an N-Way Set Associative Cache?
 An **N-way set associative cache** is a flexible design where each memory block can map to one of several lines (ways) within a specific set.  
