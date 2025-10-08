@@ -1,8 +1,11 @@
-// Code your testbench here
-// or browse Examples
-// Code your testbench here
-// or browse Examples
-// or browse Examples
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the testbench code to verify all read cases of n way cache memory module for 4 way implementation.
+//
+// Author: Ammarah Wakeel.
+// Date: 15th, August, 2025.
 `timescale 1ns/1ps
 
 module tb_cache_read_hit_preload;
@@ -446,5 +449,6 @@ $display("DEBUG: Cache[1][3] V=%b D=%b TAG=%h BLK=%h",
 
     $finish;
   end
+
 
 endmodule
