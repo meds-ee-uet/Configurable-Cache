@@ -64,6 +64,7 @@ A **common cache controller** was designed to be used across all versions.
 It is responsible for handling operations such as read, write, cache miss detection, write-back, and refill through the same **finite state machine (FSM)**.
 The **primary difference** among cache configurations lies within the **cache memory module**, where the **associativity** and **replacement policy** are varied.  
 While the Direct-Mapped Cache contains a single line per set, multi-way caches (such as 2-way or N-way) perform **parallel tag comparisons** and utilize the **PLRU (Pseudo-Least Recently Used)** replacement policy to determine which block should be replaced during a miss.
+
 Hence, the explanation and diagrams of the **Direct-Mapped Cache** serve as the conceptual foundation for understanding all **higher-associativity caches** implemented in this project.
 
 
