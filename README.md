@@ -4,6 +4,17 @@
 
 
 # ***CONFIGURABLE CACHE***
+## 📘 Table of Contents
+- [Overview](#configurable-cache-systemverilog-implementation)
+- [License](#license)
+- [Top Level Diagram](#top-level-diagram)
+- [Directory Structure](#-directory-structure)
+- [User Guide](#-user-guide)
+  - [Directory Overview](#-directory-overview)
+  - [Address Decoder Configuration](#️-address-decoder-configuration)
+  - [Parameter Configuration](#-parameter-configuration)
+
+---
 # Configurable Cache (SystemVerilog Implementation)
 
 > **Parametric, synthesizable cache design with configurable associativity, block size, and replacement policies for learning and embedded systems.**
