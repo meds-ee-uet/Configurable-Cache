@@ -1,3 +1,11 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+//Description : this file contains test code for RTL of cache decoder.
+// Author:  Ammarah Wakeel.
+// Date: 28th, june, 2025.
+// CACHE CONTROLLER IS SAME AS DIRECT MAPPED CACHE, 2 WAY CACHE AND N WAY CACHE
 `timescale 1ns/1ps
 
 module cache_decoder_tb;
@@ -46,5 +54,6 @@ module cache_decoder_tb;
         #10;
         $finish;
     end
+
 
 endmodule
