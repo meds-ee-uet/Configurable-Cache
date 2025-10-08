@@ -41,7 +41,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 ## **TOP LEVEL DIAGRAM**:
 
 <div align="center">
-  <img src="TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png" width="600" height="400">
+  <img src="docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png" width="600" height="400">
 </div>
 
 
@@ -71,7 +71,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ## **DataPath**
 <div align="center">
-  <img src="TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.png" width="600" height="400">
+  <img src="docs/TOP_BLOCK_LEVEL/DATAPATH_CONTROLLER.png" width="600" height="400">
 </div>
 
 
@@ -83,7 +83,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 
 <div align="center">
-  <img src="outputs/dataflow.png" width="600" height="400">
+  <img src="docs/outputs/dataflow.png" width="600" height="400">
 </div>
 
 
@@ -93,7 +93,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ### 1️⃣ `cache_decoder`
 <div align="center">
-  <img src="module_level/cache_decoder.png" width="600" height="400">
+  <img src="docs/module_level/cache_decoder.png" width="600" height="400">
 </div>
 
 
@@ -114,7 +114,7 @@ Our first implementation is a direct-mapped cache with the following configurati
 
 ### 2️⃣ `cache_controller`
 div align="center">
-  <img src="module_level/CACHE_CONTROLLER.png" width="600" height="400">
+  <img src="docs/module_level/CACHE_CONTROLLER.png" width="600" height="400">
 </div>
 
 
@@ -187,7 +187,7 @@ div align="center">
 
 ### 3️⃣ `cache_memory`
 <div align="center">
-<img src="module_level/CACHE_MEMORY.png" alt="Alt text" width="400"/>
+<img src="docs/module_level/CACHE_MEMORY.png" alt="Alt text" width="400"/>
 </div>
 
 
@@ -353,44 +353,44 @@ Each test case triggers different controller states and prints internal FSM stat
 
 
 <div align="center">
-<img src="outputs/readhit.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/readhit.png" alt="Alt text" width="400"/>
 </div>
 
 ### Write hit:
 
 <div align="center">
-<img src="outputs/writehit.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/writehit.png" alt="Alt text" width="400"/>
 </div>
 
 
 ### Read Miss Clean:
 
 <div align="center">
-<img src="outputs/readmissclean.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/readmissclean.png" alt="Alt text" width="400"/>
 </div>
 
 ### Read Miss Dirty:
 
 <div align="center">
-<img src="outputs/readmissdirty.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/readmissdirty.png" alt="Alt text" width="400"/>
 </div>
 
 ### Write Miss CLean:
 
 <div align="center">
-<img src="outputs/writemissclean.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/writemissclean.png" alt="Alt text" width="400"/>
 </div>
 
 ### Write Miss Dirty:
 
 <div align="center">
-<img src="outputs/writemissdirty.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/writemissdirty.png" alt="Alt text" width="400"/>
 </div>
 
 ### Snippet of Waves from Simulation:
 
 <div align="center">
-<img src="outputs/waveforcontroller.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/waveforcontroller.png" alt="Alt text" width="400"/>
 </div>
 
 
@@ -521,12 +521,12 @@ The testbench runs a comprehensive set of operations designed to test key cache 
 ## Expected Output
 
  <div align="center">
-<img src="outputs/READMISS.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/READMISS.png" alt="Alt text" width="400"/>
 </div>
 
 
 <div align="center">
-<img src="outputs/writemiss.png" alt="Alt text" width="400"/>
+<img src="docs/outputs/writemiss.png" alt="Alt text" width="400"/>
 </div>
 
 ## Testing of integrated RTL modules:
