@@ -1,3 +1,11 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+//Description : this file contains the header file for direct mapped cache .
+// Author:  Ayesha Anwar.
+// Date: 28th, june, 2025.
+
 // cache_defines.svh
 
 `ifndef CACHE_DEFINES_SVH
@@ -17,3 +25,4 @@ parameter int OFFSET_WIDTH      = $clog2(WORDS_PER_BLOCK);
 typedef logic [BLOCK_SIZE + TAG_WIDTH + 2 - 1 : 0] cache_line_t;
 
 `endif
+
