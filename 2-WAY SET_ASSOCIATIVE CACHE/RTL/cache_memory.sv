@@ -1,3 +1,9 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Author: Ammarah Wakeel, Ayesha Anwar, Eman Nasar.
+// Date: 17th, july, 2025.
 // ============================================================================
 // Module: cache_memory
 // Description:
@@ -172,3 +178,4 @@ module cache_memory #(
         end
     end
 endmodule
+
