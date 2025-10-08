@@ -1,3 +1,11 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+//Description : this file contains test bench for the  RTL of cache memory module of direct mapped cache.
+// Author:  Ammarah Wakeel.
+// Date: 28th, june, 2025.
+// CACHE CONTROLLER IS SAME AS DIRECT MAPPED CACHE, 2 WAY CACHE AND N WAY CACHE
 `timescale 1ns/1ps
 
 `include "cache_params.svh"  // Include the parameter definitions
@@ -259,3 +267,4 @@ module cache_tb;
         $finish;
     end
 endmodule
+
