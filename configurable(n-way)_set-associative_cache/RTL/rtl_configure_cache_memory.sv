@@ -1,4 +1,12 @@
-  // Code your design here
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the code of n way set associative  cache memory.
+//
+// Author: Ammarah Wakeel, Ayesha Anwar, Eman Nasar.
+// Date: 20th, August, 2025.
+// Code your design here
 // ============================================================================
 // N-way Set-Associative Cache with Tree-based PLRU (Write-back, Write-allocate)
 // ----------------------------------------------------------------------------
@@ -226,5 +234,6 @@ assign dirty_bit = dirty_comb;
             plru[index] <= plru_after_access(plru[index], accessed_way);
         end
     end
+
 
 endmodule
