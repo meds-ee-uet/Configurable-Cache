@@ -14,12 +14,12 @@
 - [Our Strategy](#our-strategy)
 - [For Testing](#for-testing)
 - [Direct Mapped Cache](directmappedreadme.md)
-- [2-Way Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/blob/main/2-WAY%20SET_ASSOCIATIVE%20CACHE/README2.md)
-- [4-Way Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/blob/main/4_SET_ASSOCIATIVE_CACHE/README.md)
-- [N-Way CONFIGURABLE Set-Associative Cache](https://github.com/meds-ee-uet/Configurable-Cache/tree/main/configurable(n-way)_set-associative_cache#readme)
+- [2-Way Set-Associative Cache](2way.md)
+- [4-Way Set-Associative Cache](4way.md)
+- [N-Way CONFIGURABLE Set-Associative Cache](nway.md)
 - [Synthesization of RTL](#synthesization-of-rtl)
 - [Summary](#Summary)
-- 
+
 ## **PROJECT OVERVIEW**:
 This project implements a direct-mapped cache,2-way set associative cache,4-way set associative cahe and configurable (n-way)set associative cache controller with support for basic memory transactions. It simulates how a CPU communicates with memory via a cache to reduce access latency and improve performance. 
 ## OBJECTIVE:
@@ -34,11 +34,8 @@ To build a cache system that is modular and configurable, supporting different a
 To understand and implement multiple cache configurations, comparing their behavior and performance in handling memory access patterns.
 3. **Implement Cache Controller Using FSM-Based Logic**: 
 To develop a finite state machine (FSM) that manages cache operations such as:
-
 - Cache hit/miss detection
-
 - Block replacement (e.g., using LRU for set-associative caches)
-
 - Write-back of dirty blocks
 - Memory refill and synchronization with main memory
 - Support Both Read and Write Accesses with Replacement Policies
