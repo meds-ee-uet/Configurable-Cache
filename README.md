@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/meds_uet_logo.jpegg"  width="120">
+  <img src="/Direct_Mapped_Cache/docs/meds_uet_logo.png"  width="120">
 </p>
 
 
