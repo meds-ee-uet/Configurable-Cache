@@ -4,17 +4,6 @@
 
 
 # ***CONFIGURABLE CACHE***
-## 📘 Table of Contents
-- [Overview](#configurable-cache-systemverilog-implementation)
-- [License](#license)
-- [Top Level Diagram](#top-level-diagram)
-- [Directory Structure](#-directory-structure)
-- [User Guide](#-user-guide)
-  - [Directory Overview](#-directory-overview)
-  - [Address Decoder Configuration](#️-address-decoder-configuration)
-  - [Parameter Configuration](#-parameter-configuration)
-  - [Documentation](#Documentation)
-
 ---
 # Configurable Cache (SystemVerilog Implementation)
 
