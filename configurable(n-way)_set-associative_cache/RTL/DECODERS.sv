@@ -1,4 +1,12 @@
- //	DECODER FOR 2-WAY
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the code of  cache deecoder for different n-way associtivity factor.
+// Note: for a specific "n" way cache you have to use the decoder code accoring to the "n" factor. 
+// Author: Ammarah Wakeel, Ayesha Anwar, Eman Nasar.
+// Date: 10th, August, 2025.
+//	DECODER FOR 2-WAY
 
 module cache_decoder(clk, addr, tag, index, blk_offset);
     input logic clk;
@@ -58,4 +66,5 @@ module cache_decoder(clk, addr, tag, index, blk_offset);
    assign index = addr[3:2];
    assign blk_offset = addr[1:0];
     
+
 endmodule
