@@ -1,3 +1,4 @@
+#  2-WAY SET ASSOCIATIVE CACHE
 ## 1- What is a 2-Way Set Associative Cache?
 A set-associative cache allows each memory block to map to a specific set containing multiple lines (ways).
 
