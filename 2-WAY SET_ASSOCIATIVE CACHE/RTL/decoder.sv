@@ -1,6 +1,12 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+// Author: Ammarah Wakeel, Ayesha Anwar, Eman Nasar.
+// Date: 15th, july, 2025.
+
 //==============================================================
 //  Module: cache_decoder
-//  Function: Decodes a 32-bit memory address into tag, index, 
+//  Description: Decodes a 32-bit memory address into tag, index, 
 //            and block offset fields for a 2-way set associative cache.
 //==============================================================
 
