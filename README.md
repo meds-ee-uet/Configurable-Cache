@@ -7,15 +7,19 @@
 # Configurable Cache (SystemVerilog Implementation)
 
 > **Parametric, synthesizable cache design with configurable associativity, block size, and replacement policies for learning and embedded systems.**
-# ***TOP LEVEL DIAGRAM***
-<p align="center">
-  <img src="/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png"  width="360">
-</p>
 
+
+# ***LICENSE***
 🗓️ Last updated: July 22, 2025  
 © 2025 Maktab-e-Digital Systems Lahore. Licensed under the Apache 2.0 License.
 
 ---
+
+
+# ***TOP LEVEL DIAGRAM***
+<p align="center">
+  <img src="/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png"  width="360">
+</p>
 ## 📁 Directory Structure
 
 ```
