@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="docs/meds_uet_logo.jpegg"  width="120">
+</p>
+
+
 # ***CONFIGURABLE CACHE***
 # Configurable Cache (SystemVerilog Implementation)
 
