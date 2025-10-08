@@ -8,7 +8,7 @@
 
 ---
 
-## 📘 Table of Contents
+##  Table of Contents
 - [Project Overview](#project-overview)
 - [Objective](#objective)
 - [Our Strategy](#our-strategy)
