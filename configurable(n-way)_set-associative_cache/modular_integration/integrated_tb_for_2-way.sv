@@ -1,3 +1,12 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Description: This file contains the testbench code to verify all  cases of n way integrated cache modules for 2 way implementation.
+//
+// Author: Ayesha Anwar.
+// Date: 17th, August, 2025.
+
 `timescale 1ns/1ps
 module tb_top;
     parameter int WORD_SIZE         = 32; // bits per word
@@ -455,4 +464,5 @@ module tb_top;
 $finish;
 end 
 endmodule
+
 
