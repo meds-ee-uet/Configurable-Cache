@@ -4,4 +4,13 @@ docs_dir: Direct_Mapped_Cache/docs
 nav:
   - Home: index.md
   - Direct Mapped Cache: directmappedreadme.md
+  - 2-Way Set-Associative Cache: 2way.md
+  - 4-Way Set-Associative Cache: 4way.md
+  - N-Way CONFIGURABLE Set-Associative Cache: nway.md
+  
+  
+
+  
+  
+  
 
