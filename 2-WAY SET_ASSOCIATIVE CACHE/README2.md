@@ -1,3 +1,7 @@
+## 1- What is a 2-Way Set Associative Cache?
+A set-associative cache allows each memory block to map to a specific set containing multiple lines (ways).
+
+In 2-way set associative, each set contains 2 lines. The cache index selects a set, but within that set, two tags are compared in parallel. Replacement policy (e.g., LRU) decides which line to evict when the set is full
 ## 2- Specifications of Our 2-Way Set Associative Cache:
 
 
