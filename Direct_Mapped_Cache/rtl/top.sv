@@ -1,3 +1,11 @@
+// Copyright 2025 Maktab-e-Digital Systems Lahore.
+// Licensed under the Apache License, Version 2.0, see LICENSE file for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+//Description : this file contains top module for integrating all modules of direct mapped cache.
+// Author:  Ammarah Wakeel, Ayesha Anwar, Eman Nasar.
+// Date: 28th, june, 2025.
+// CACHE CONTROLLER IS SAME AS DIRECT MAPPED CACHE, 2 WAY CACHE AND N WAY CACHE
 module top (
     input  logic clk,
     input  logic rst,
@@ -65,3 +73,4 @@ module top (
    );
   
 endmodule
+
