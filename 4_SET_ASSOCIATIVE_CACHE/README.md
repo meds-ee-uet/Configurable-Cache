@@ -1,12 +1,12 @@
-# 2-Way Set-Associative Cache
+# 4-Way Set-Associative Cache
 
-## 1.Overview
+## 1. Overview
 
-A **2-Way Set-Associative Cache** is a type of cache memory organization that strikes a balance between the simplicity of direct-mapped caches and the flexibility of fully associative caches. In this configuration, the cache is divided into multiple sets, each containing two cache lines. A memory block can be placed in either of the two lines within a set, allowing for more flexible data placement and reducing the likelihood of cache misses compared to direct-mapped caches.
+A **4-Way Set-Associative Cache** is a cache memory organization where each set contains four cache lines. Compared to a 2-way set-associative cache, it provides even more placement flexibility, further reducing conflict misses and improving cache hit rates for workloads with frequent memory reuse.
 
 ### Structure
 
-- **Cache Division**: The cache is divided into several sets, each containing two cache lines.
+- **Cache Division**: The cache is divided into multiple sets, each containing four cache lines.
 - **Address Breakdown**: A memory address is divided into three parts:
   - **Tag**: Identifies the specific block in memory.
   - **Set Index**: Determines which set the data might reside in.
@@ -17,25 +17,26 @@ A **2-Way Set-Associative Cache** is a type of cache memory organization that st
 When a memory request is made:
 
 1. The **Set Index** part of the address is used to select a set.
-2. Both cache lines within the selected set are checked for a match using the **Tag**.
-3. If either line contains the requested data, it's a cache hit; otherwise, it's a miss, and the data is fetched from main memory.
+2. All four cache lines within the selected set are checked for a match using the **Tag**.
+3. If any line contains the requested data, it is a cache hit; otherwise, it is a miss, and the data is fetched from main memory.
 
-### Comparison with Direct-Mapped Cache
+### Comparison with 2-Way Set-Associative Cache
 
-| Feature               | Direct-Mapped Cache           | 2-Way Set-Associative Cache     |
-|-----------------------|-------------------------------|---------------------------------|
-| Cache Lines per Set    | 1                             | 2                               |
-| Placement Flexibility  | Low (fixed mapping)           | Moderate (2 choices per set)    |
-| Conflict Misses        | Higher                        | Lower                           |
-| Hardware Complexity    | Simpler                       | More complex                    |
-| Performance            | May degrade with certain access patterns | Better for a wider range of patterns |
+| Feature               | 2-Way Set-Associative Cache | 4-Way Set-Associative Cache |
+|-----------------------|-----------------------------|-----------------------------|
+| Cache Lines per Set    | 2                           | 4                           |
+| Placement Flexibility  | Moderate (2 choices per set)| Higher (4 choices per set) |
+| Conflict Misses        | Low                         | Lower                       |
+| Hardware Complexity    | Moderate                    | Higher                      |
+| Performance            | Good for many access patterns| Better for high-conflict access patterns |
 
-### Benefits Over Direct-Mapped Cache
+### Benefits Over 2-Way Set-Associative Cache
 
-- **Reduced Conflict Misses**: By allowing two possible locations for each block, the likelihood of conflicts is decreased, leading to a higher cache hit rate.
-- **Improved Performance**: Especially beneficial for workloads with access patterns that might cause frequent conflicts in a direct-mapped cache.
-- **Balanced Complexity**: Offers a compromise between the simplicity of direct-mapped caches and the complexity of fully associative caches.
-## 2- Specifications of Our 2-Way Set Associative Cache:
+- **Further Reduced Conflict Misses**: More options for placing memory blocks within a set reduces the chance of cache conflicts.
+- **Improved Cache Hit Rate**: Especially beneficial for programs with repeated accesses to multiple memory addresses that map to the same set.
+- **Better Performance for Complex Workloads**: Handles high-frequency accesses more efficiently without dramatically increasing the cache size.
+
+## 2- Specifications of Our 4-Way Set Associative Cache:
 
 
 
@@ -45,19 +46,19 @@ When a memory request is made:
 | Words per Block      | 4 words |
 | Block Size           | 128 bits (16 bytes per block) |
 | Number of Blocks     | 64 (total cache lines across all sets & ways) |
-| Associativity        | 2-way (each set holds 2 cache lines) |
-| Number of Sets       | 32 sets (NUM_BLOCKS / NUM_WAYS) |
+| Associativity        | 4-way (each set holds 4 cache lines) |
+| Number of Sets       | 16 sets (NUM_BLOCKS / NUM_WAYS) |
 | Cache Size           | 1 KB (64 blocks × 16 bytes = 1024 bytes) |
-| Index Bits           | 5 ($clog2(NUM_SETS) = 32 → 5) |
+| Index Bits           | 4 ($clog2(NUM_SETS) = 16 → 4) |
 | Block Offset Bits    | 2 ($clog2(WORDS_PER_BLOCK) = 4 → 2) |
-| Tag Width            | 25 bits |
+| Tag Width            | 26 bits |
 | Valid Bit            | 1 per cache line |
 | Dirty Bit            | 1 per cache line |
 | Replacement Policy   | PLRU (Pseudo-LRU), maintained as a single bit per set |
-| Cache Line Format    | {valid (1), dirty (1), tag (25), block (128 bits)} → total 155 bits per cache line |
-| Data Storage         | 2D array: `cache[NUM_SETS][2]` (set-indexed, 2 ways per set) |
+| Cache Line Format    | {valid (1), dirty (1), tag (26), block (128 bits)} → total 156 bits per cache line |
+| Data Storage         | 2D array: `cache[NUM_SETS][4]` (set-indexed, 4 ways per set) |
 
-## 3- Top-Level Diagram (2-Way vs Direct-Mapped):
+## 3- Top-Level Diagram (4-Way vs Direct-Mapped):
  Top level diagram almost remains the same, here is the brief overview:
 ### ***Inputs***:
 - **req_type**: 0 = Read, 1 = Write (same as direct-mapped).
@@ -82,7 +83,7 @@ When a memory request is made:
 
 - **hit:** Indicates tag match in either way (different from direct-mapped where only 1 tag check existed).
 
-## **4- Datapath (2-Way Overview)**:
+## **4- Datapath (4-Way Overview)**:
 ### ***Similarities***:
 
 - CPU sends requests (req_valid, req_type, address, data_in).
@@ -100,11 +101,15 @@ Direct-Mapped → 1 tag check per set.
 
 2-Way → two parallel comparators, one for each way.
 
+4-Way → four parallel comparators, one for each way.
+
 2- **Cache Storage:**
 
 Direct-Mapped → cache[NUM_SETS] (one line per set).
 
 2-Way → cache[NUM_SETS][2] (two lines per set).
+
+4-Way → cache[NUM_SETS][4] (four lines per set).
 
 3- **Replacement Policy:**
 
@@ -112,11 +117,15 @@ Direct-Mapped → No replacement needed (fixed slot).
 
 2-Way → Pseudo-LRU (1 bit per set) decides which way to evict.
 
+4-Way → Pseudo-LRU (1 bit per set) decides which way to evict.
+
 4- **Hit Signal:**
 
 Direct-Mapped → hit = valid && (tag == stored_tag).
 
 2-Way → hit = (hit_way0 || hit_way1).
+
+4-Way → hit = (hit_way0 || hit_way1 || hit_way2 || hit_way3).
 
 ## **5- Cache Controller (FSM Brief)**:
 The FSM remains almost identical:
@@ -144,25 +153,25 @@ The FSM remains almost identical:
 - clk, address [31:0]
 #### **Outputs:**
 
-- tag [24:0]
+- tag [25:0]
 
-- index [4:0]
+- index [3:0]
 
 - blk_offset [1:0]
 #### **Function:**
 Splits the 32-bit CPU address into:
 
-- tag (upper bits): sent to both way (contains 2 lines → way0 and way1).comparators.
+- tag (upper bits): sent to all ways (contains 4 lines → way0, way1, way2, way3).comparators.
 
-- index (middle bits): selects the set (contains 5 bits to represent 32 sets)
+- index (middle bits): selects the set (contains 4 bits to represent 16 sets)
 
 - block offset (lowest bits): selects word within block.
 
 ### 2- Cache controller:
-Cache controler module is exactly same as direct mapped cache.
+Cache controler module is exactly same as direct mapped cache & 2-way set-associative cache.
 
 ### 3- Main Memory Interface:
-main memory interface is also exactly the same as direct mapped cache.
+main memory interface is also exactly the same as direct mapped cache & 2-way set-associative cache.
 
 ### 4- Cache Memory module:
 ####  ***Inputs***:
@@ -190,13 +199,13 @@ main memory interface is also exactly the same as direct mapped cache.
 #### **Internal Structures**
 
 - **Cache Line Format** – `{valid, dirty, tag, block_data}`  
-- **cache array** – `cache[NUM_SETS][2]` → 2 ways per set  
-- **PLRU array** – `plru[NUM_SETS]` → 1-bit replacement info per set  
-- **cache_info_t struct (info0, info1)** – Holds per-way signals: valid, dirty, tag, block, hit .
+- **cache array** – `cache[NUM_SETS][4]` → 4 ways per set  
+- **PLRU array** – `plru[NUM_SETS]` → 3-bit replacement info per set (tree-based PLRU)
+- **cache_info_t struct (info0, info1, info2, info3)** – Holds per-way signals: valid, dirty, tag, block, hit .
 #### ***Functionality***:
 ##### i- **Hit/Miss Detection**
 
-For each set, the two ways are checked in parallel:
+For each set, the four ways are checked in parallel:
 
 - If the stored tag matches the CPU tag and valid bit = 1, that way asserts a hit.
 
@@ -207,44 +216,88 @@ For each set, the two ways are checked in parallel:
 This design uses **Pseudo-LRU (PLRU)** instead of a true LRU to reduce hardware cost.
 
 ##### ***How PLRU Works in This Module***:
-- Each set has a single **PLRU bit** (`plru[index]`)  
-- This bit points to the victim candidate for the next replacement  
-- **If `plru[index] = 0` → way-0** will be replaced on a miss  
-- **If `plru[index] = 1` → way-1** will be replaced on a miss  
-- Whenever a way is accessed (hit or refill), the PLRU bit **flips** to mark the other way as the future victim  
+- Each set maintains **3 PLRU bits** (`plru[index].b1`, `plru[index].b2`, `plru[index].b3`).
+- These bits form a **binary tree** that encodes the least-recently-used (LRU) way.
+- **Victim selection on miss**:
+  - `b1` decides which subtree to evict from:
+    - `0` → go left subtree (ways 0–1)
+    - `1` → go right subtree (ways 2–3)
+  - If left subtree chosen:
+    - `b2=0` → victim = way-0
+    - `b2=1` → victim = way-1
+  - If right subtree chosen:
+    - `b3=0` → victim = way-2
+    - `b3=1` → victim = way-3
+- **Update on access (hit or refill)**:
+  - When a way is accessed, the tree bits are updated so that this way becomes **most recently used (MRU)**.
+  - The tree is flipped to point toward another way as the **next replacement candidate**.
 
-This ensures that the way least recently accessed is always chosen, but with only **1 bit per set** overhead.
+This approximates true LRU with only **3 bits per set**, instead of maintaining full access history.
 
 ##### ***Example Flow***:
-1. CPU hits in **way-0** → `plru[index]` is set to `1` (so way-1 is next victim)  
-2. Next miss in that set → **way-1** will be evicted  
-3. If CPU then hits in **way-1** → `plru[index]` flips back to `0`  
+1. CPU hits in **way-0** → PLRU tree updates (`b1=1, b2=1`) so that way-0 is marked MRU, and another way (way-1 or from the right subtree) becomes the next victim.
+2. Next miss in that set → Victim is chosen by traversing the PLRU tree. For example, if `b1=1, b3=0`, then **way-2** will be evicted.
+3. If CPU then hits in **way-2** → PLRU tree updates (`b1=0, b3=1`) so that way-2 is MRU, and another way (e.g., way-0, way-1, or way-3) becomes the next victim.
 
-Thus, PLRU approximates LRU but with far less storage.
+Thus, Tree-PLRU approximates true LRU with only **3 bits per set**, instead of storing full history.
 
 ##### iii-  **Miss Handling**
 
 When a miss occurs:
-- If **one way is invalid** → the block is refilled into that empty way  
-- If **both are valid** → the PLRU victim way is chosen  
-- If the victim is **clean** → directly overwritten  
-- If the victim is **dirty** → the dirty block is written to memory first (`dirty_block_out`), then refilled with new data  
+- If **any way is invalid** → the block is refilled into the first invalid way  
+- If **all 4 ways are valid** → the PLRU victim way is chosen  
+- If the victim is **clean** → it is directly overwritten with the new block  
+- If the victim is **dirty** → the dirty block is written back to memory first (`dirty_block_out`), then the new block is refilled into that way
 
 
 
 #### iv- **Read and Write Operations**
 
+- #### iv- **Read and Write Operations**
+
 - **On a Read Hit**  
-  - The requested word (`blk_offset`) is selected from the block and sent to `data_out`  
-  - PLRU is updated to point to the other way  
+```systemverilog
+if (hit) begin
+    data_out = cache[set][hit_way].block[blk_offset];  
+    // update PLRU for this set
+    plru[set] = update_plru(plru[set], hit_way);
+end
 
-- **On a Write Hit**  
-  - The word is updated in place and marked **dirty**  
-  - PLRU flips to mark the other way as next victim  
 
+- **On a Write Hit** 
+```systemverilog 
+ if (hit) begin
+    cache[set][hit_way].block[blk_offset] = data_in;
+    cache[set][hit_way].dirty = 1'b1;  
+    // update PLRU for this set
+    plru[set] = update_plru(plru[set], hit_way);
+end
+```
 - **On a Miss**  
-  - Memory is accessed, block is refilled, and PLRU is updated accordingly  
+```systemverilog 
+  if (miss) begin
+    if (exists_invalid_way(set)) begin
+        victim_way = get_invalid_way(set);
+    end else begin
+        victim_way = get_plru_victim(plru[set]);
+    end
+    
+    if (cache[set][victim_way].dirty) begin
+        // write back dirty block to memory
+        dirty_block_out = cache[set][victim_way].block;
+        write_back_to_mem(tag, set, cache[set][victim_way]);
+    end
+    
+    // refill from memory
+    cache[set][victim_way].block = read_block_from_mem(address);
+    cache[set][victim_way].valid = 1'b1;
+    cache[set][victim_way].dirty = is_write ? 1'b1 : 1'b0;
 
+    // update PLRU
+    plru[set] = update_plru(plru[set], victim_way);
+end
+  
+```
 ---
 
 #### ***Why PLRU is Efficient Here***
@@ -373,14 +426,7 @@ It systematically simulates read and write operations across multiple ways of a 
 - **Preloaded Cache Content**: Controlled initialization for targeted tests  
 - **Cycle-by-Cycle Verification**: Uses `@(posedge clk)` for stepwise operations  
 - **Readable Logs**: Shows hit/miss, dirty bit, PLRU victim, and cache state  
-- **Waveform-Friendly**: Clear signal transitions for debugging
-
-
-
-## Testing of integrated RTL modules:
-[modular_integration](https://github.com/ee-uet/configurable-cache/tree/main/2-WAY%20SET_ASSOCIATIVE%20CACHE/modular_integration)
-
-
+- **Waveform-Friendly**: Clear signal transitions for debugging  
 
 
 
