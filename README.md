@@ -68,7 +68,7 @@ Inside the `Configurable_N_Way_Set_Associative_Cache/` directory, you’ll find:
 
 - **`rtl/`** – Contains the main SystemVerilog source files for the configurable cache design.  
 - **`testbench/`** – Includes verification modules and simulation files.  
-- **`modular_integration/`** – Provides integrated RTL and testbench files for modular simulation and synthesis.
+- **`modular_integration/`** – Provides integrated RTL and testbench files for  simulation and synthesis.
 
 ---
 
