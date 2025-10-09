@@ -11,7 +11,7 @@
 
 
 # ***LICENSE***
-🗓️ Last updated: July 22, 2025  
+ Last updated: July 22, 2025  
 © 2025 Maktab-e-Digital Systems Lahore. Licensed under the Apache 2.0 License.
 
 ---
@@ -57,12 +57,12 @@ cache-project/
         └── testbench/
 ```
 
-## 🧭 User Guide
+## 🧭 ***User Guide***
 
 The **Configurable_N_Way_Set_Associative_Cache** directory provides a flexible and parameterized implementation of a cache memory system.  
 It allows users to easily configure the **cache associativity (number of ways)**, **address width**, **block size**, and other key architectural parameters.
 
-### 📂 Directory Overview
+###  a.Directory Overview
 
 Inside the `Configurable_N_Way_Set_Associative_Cache/` directory, you’ll find:
 
@@ -72,7 +72,7 @@ Inside the `Configurable_N_Way_Set_Associative_Cache/` directory, you’ll find:
 
 ---
 
-### ⚙️ Address Decoder Configuration
+###  b.Address Decoder Configuration
 
 In the `rtl/` folder, you will find a file named **`decoders.sv`**, which contains address decoding logic for multiple cache configurations:
 
@@ -87,7 +87,7 @@ This approach makes the cache module adaptable while keeping all decoding option
 
 ---
 
-### 🧩 Parameter Configuration
+###  c.Parameter Configuration
 
 A dedicated **header file** is included to make the design customizable.  
 This file defines important parameters that can be modified according to your system’s requirements.
