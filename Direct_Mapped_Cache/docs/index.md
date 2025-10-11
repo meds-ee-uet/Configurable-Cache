@@ -9,7 +9,7 @@
 ---
 
 ##  Table of Contents
-- [Project Overview](#project-overview)
+- [Project Overview](#Project_Overview)
 - [Objective](#objective)
 - [Our Strategy](#our-strategy)
 - [For Testing](#for-testing)
@@ -20,16 +20,16 @@
 - [Synthesization of RTL](#synthesization-of-rtl)
 - [Summary](#Summary)
 
-## **PROJECT OVERVIEW**:
+## Project Overview:
 This project implements a direct-mapped cache,2-way set associative cache,4-way set associative cahe and configurable (n-way)set associative cache controller with support for basic memory transactions. It simulates how a CPU communicates with memory via a cache to reduce access latency and improve performance. 
-## OBJECTIVE:
+## Objective:
 The primary objectives of this project are:
 1. **Design a Configurable Cache Architecture**: 
 To build a cache system that is modular and configurable, supporting different associativity levels:
-  - Direct-mapped cache
-  - 2-way set associative cache
-  - 4-way set associative cache
-  - n-way set associative cache
+   - Direct-mapped cache
+   - 2-way set associative cache
+   - 4-way set associative cache
+   - n-way set associative cache
 2. **Explore Cache Organization Techniques**: 
 To understand and implement multiple cache configurations, comparing their behavior and performance in handling memory access patterns.
 3. **Implement Cache Controller Using FSM-Based Logic**: 
@@ -45,9 +45,8 @@ To implement logic that handles:
        - Write-allocate and read-allocate refill policies
        - LRU replacement policy in associative caches
 
-## ***OUR STRATEGY***:
+## Our Strategy:
 We decided to move from basic fundamentals to higher level. So, we implemented a direct mapped cache first. Then we will move our approach to set associative cache mapping.
-
 ## For Testing:
 We started from testing our RTL module by module to check their functionality, and then we integrated all the modules. Later, we tested them again for each cache, starting from direct-mapped cache.
 ## Synthesization of RTL:
@@ -55,14 +54,15 @@ we synthesized RTL on Vivado to check its compatibility with hardware implementa
 [synthesis_vivado](https://github.com/meds-ee-uet/Configurable-Cache/tree/main/synthesis_vivado)
 
 ## Summary 
-In this documentation, the **datapath** and **controller diagrams** have been provided only for the **Direct-Mapped Cache**.  
-This was done because the **core architecture** and **control logic** remain **identical** across all cache configurations — from **Direct-Mapped** to **N-Way Configurable Caches**.
-A **common cache controller** was designed to be used across all versions.  
-It is responsible for handling operations such as read, write, cache miss detection, write-back, and refill through the same **finite state machine (FSM)**.
-The **primary difference** among cache configurations lies within the **cache memory module**, where the **associativity** and **replacement policy** are varied.  
-While the Direct-Mapped Cache contains a single line per set, multi-way caches (such as 2-way or N-way) perform **parallel tag comparisons** and utilize the **PLRU (Pseudo-Least Recently Used)** replacement policy to determine which block should be replaced during a miss.
+In this documentation, the datapath and controller diagrams have been provided only for the Direct-Mapped Cache.  
+This was done because the core architecture and control logic remain identical across all cache configurations — from Direct-Mapped to N-Way Configurable Caches.
 
-Hence, the explanation and diagrams of the **Direct-Mapped Cache** serve as the conceptual foundation for understanding all **higher-associativity caches** implemented in this project.
+A common cache controller was designed to be used across all versions.  
+It is responsible for handling operations such as read, write, cache miss detection, write-back, and refill through the same finite state machine (FSM).
+The primary difference among cache configurations lies within the cache memory module, where the associativity and replacement policy are varied.  
+While the Direct-Mapped Cache contains a single line per set, multi-way caches (such as 2-way or N-way) perform parallel tag comparisons  and utilize the **PLRU (Pseudo-Least Recently Used)** replacement policy to determine which block should be replaced during a miss.
+
+Hence, the explanation and diagrams of the Direct-Mapped Cache serve as the conceptual foundation for understanding all higher-associativity caches implemented in this project.
 
 
 
