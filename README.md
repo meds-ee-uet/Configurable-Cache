@@ -10,19 +10,19 @@
 > **Parametric, synthesizable cache design with configurable associativity, block size, and replacement policies for learning and embedded systems.**
 
 
-# ***LICENSE***
+## LICENSE
  Last updated: July 22, 2025  
 © 2025 Maktab-e-Digital Systems Lahore. Licensed under the Apache 2.0 License.
 
 ---
 
 
-# ***TOP LEVEL DIAGRAM***
+## TOP LEVEL DIAGRAM
 <p align="center">
   <img src="/Direct_Mapped_Cache/docs/TOP_BLOCK_LEVEL/CACHE_TOPLEVEL.png"  width="360">
 </p>
 
-## ***Directory Structure***
+## Directory Structure
 ```
 cache-project/
 │
@@ -98,4 +98,4 @@ Below is the example of parameters you can edit:
 parameter int NUM_WAYS         = 4; // Must be a power of 2 (e.g., 2, 4, 8, 16)
 ```
 ### Documentation
-[Documentation Status](https://repo-k.readthedocs.io/en/latest/)
+[Documentation ](https://repo-k.readthedocs.io/en/latest/)
