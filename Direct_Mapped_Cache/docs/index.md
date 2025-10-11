@@ -26,24 +26,24 @@ This project implements a direct-mapped cache,2-way set associative cache,4-way 
 The primary objectives of this project are:
 1. **Design a Configurable Cache Architecture**: 
 To build a cache system that is modular and configurable, supporting different associativity levels:
-- Direct-mapped cache
-- 2-way set associative cache
-- 4-way set associative cache
-- n-way set associative cache
+  - Direct-mapped cache
+  - 2-way set associative cache
+  - 4-way set associative cache
+  - n-way set associative cache
 2. **Explore Cache Organization Techniques**: 
 To understand and implement multiple cache configurations, comparing their behavior and performance in handling memory access patterns.
 3. **Implement Cache Controller Using FSM-Based Logic**: 
 To develop a finite state machine (FSM) that manages cache operations such as:
-- Cache hit/miss detection
-- Block replacement (e.g., using LRU for set-associative caches)
-- Write-back of dirty blocks
-- Memory refill and synchronization with main memory
-- Support Both Read and Write Accesses with Replacement Policies
+   - Cache hit/miss detection
+   - Block replacement (e.g., using LRU for set-associative caches)
+   - Write-back of dirty blocks
+   - Memory refill and synchronization with main memory
+   - Support Both Read and Write Accesses with Replacement Policies
 To implement logic that handles:
-  - Read and write requests from a simulated CPU
-  - Write-back on dirty evictions
-  - Write-allocate and read-allocate refill policies
-  - LRU replacement policy in associative caches
+       - Read and write requests from a simulated CPU
+       - Write-back on dirty evictions
+       - Write-allocate and read-allocate refill policies
+       - LRU replacement policy in associative caches
 
 ## ***OUR STRATEGY***:
 We decided to move from basic fundamentals to higher level. So, we implemented a direct mapped cache first. Then we will move our approach to set associative cache mapping.
