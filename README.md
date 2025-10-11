@@ -97,5 +97,5 @@ Below is the example of parameters you can edit:
 ```systemverilog
 parameter int NUM_WAYS         = 4; // Must be a power of 2 (e.g., 2, 4, 8, 16)
 ```
-### Documentation
+## Documentation
 [Documentation ](https://repo-k.readthedocs.io/en/latest/)
